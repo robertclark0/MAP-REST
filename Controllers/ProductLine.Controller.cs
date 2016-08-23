@@ -15,7 +15,7 @@ namespace MAP_REST.Controllers
 
         [Route("product-lines")]
         [HttpPost]
-        public HttpResponseMessage Get([FromBody] dynamic postObject)
+        public HttpResponseMessage ProductLines([FromBody] dynamic postObject)
         {
             var db = new ProductLineDataContext();
             var result = new List<Models.ProductLine>() ;
@@ -23,6 +23,20 @@ namespace MAP_REST.Controllers
 
             Log.ServerLog(Log.GenerateServerSessionID(), "product-lines", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
+        }
+
+        [Route("data-sources")]
+        [HttpPost]
+        public HttpResponseMessage DataSources([FromBody] dynamic postObject)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, "sources");
+        }
+
+        [Route("data-source-parameters")]
+        [HttpPost]
+        public HttpResponseMessage DataSourceParameters([FromBody] dynamic postObject)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, "parameters");
         }
     }
 }
