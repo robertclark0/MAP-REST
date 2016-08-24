@@ -129,13 +129,15 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BusinessLogic\Credentials.cs" />
-    <Compile Include="BusinessLogic\ServerEnvironment.cs" />
+    <Compile Include="Logic\Credentials.cs" />
+    <Compile Include="Logic\ServerEnvironment.cs" />
     <Compile Include="Controllers\Environment.Controller.cs" />
     <Compile Include="Controllers\ProductLine.Controller.cs" />
     <Compile Include="Controllers\Home.Controller.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\Query.Controller.cs" />
+    <Compile Include="Controllers\Report.Controller.cs" />
     <Compile Include="DataAccess\ConnectionString.DataContext.cs" />
     <Compile Include="DataAccess\ProductLine.DataContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -143,6 +145,7 @@
     </Compile>
     <Compile Include="Models\Connection.Model.cs" />
     <Compile Include="Models\ProductLine.Model.cs" />
+    <Compile Include="SQL\Repository.cs" />
     <Compile Include="_Logger\BussinessLogic\Logger.cs" />
     <Compile Include="_Logger\DataAccess\Logger.DataContext.cs" />
     <Compile Include="_PACT Security\BusinessLogic\ServerVariables.cs" />
