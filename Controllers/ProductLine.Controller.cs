@@ -31,7 +31,7 @@ namespace MAP_REST.Controllers
         {
             var db = new ProductLineDataContext();
             var result = new List<Models.DataSource>();
-            result = db.getDataSource(postObject.entityCode);
+            result = db.getDataSource((string)postObject.post.entityCode);
 
             Log.ServerLog(Log.GenerateServerSessionID(), "data-sources", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
@@ -43,9 +43,9 @@ namespace MAP_REST.Controllers
         {
             var db = new ProductLineDataContext();
             var result = new List<Models.DataSourceParameters>();
-            result = db.getDataSourceParameters(postObject.paramID);
+            result = db.getDataSourceParameters((int)postObject.dataSourceID);
 
-            Log.ServerLog(Log.GenerateServerSessionID(), "data-source-parameters", Log.SerializeObject(result), postObject);
+            //Log.ServerLog(Log.GenerateServerSessionID(), "data-source-parameters", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
     }
