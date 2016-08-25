@@ -163,6 +163,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="SQL\MAP_Script.sql" />
     <Content Include="SQL\storedProcs.txt" />
     <Content Include="SQL\sampleQuery.txt" />
     <Content Include="Web.config">
