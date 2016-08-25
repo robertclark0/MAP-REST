@@ -29,14 +29,24 @@ namespace MAP_REST.Controllers
         [HttpPost]
         public HttpResponseMessage DataSources([FromBody] dynamic postObject)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, "sources");
+            var db = new ProductLineDataContext();
+            var result = new List<Models.DataSource>();
+            result = db.getDataSource(postObject.entityCode);
+
+            Log.ServerLog(Log.GenerateServerSessionID(), "data-sources", Log.SerializeObject(result), postObject);
+            return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
 
         [Route("data-source-parameters")]
         [HttpPost]
         public HttpResponseMessage DataSourceParameters([FromBody] dynamic postObject)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, "parameters");
+            var db = new ProductLineDataContext();
+            var result = new List<Models.DataSourceParameters>();
+            result = db.getDataSourceParameters(postObject.paramID);
+
+            Log.ServerLog(Log.GenerateServerSessionID(), "data-source-parameters", Log.SerializeObject(result), postObject);
+            return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
     }
 }
