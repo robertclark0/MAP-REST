@@ -18,4 +18,22 @@ namespace MAP_REST.Models
         public string ModuleName { get; set; }
 
     }
+
+    public class DataSource
+    {
+        public string Code { get; set; }
+        public string DataSourceID { get; set; }
+        public string SourceName { get; set; }
+        public string SourceType { get; set; }
+    }
+
+    public class DataSourceParameters
+    {
+        public string DataSourceParameterID { get; set; }
+        public string Parametername { get; set; }
+        public string DataType { get; set; }
+        public string ParameterType { get; set; }
+        public string TableReference { get; set; }
+        public string ColumnReference { get; set; }
+    }
 }

@@ -15,18 +15,20 @@ namespace MAP_REST.DataAccess
             : base(nameOrConnectionString)
         { }
 
-        public override int SaveChanges()
-        {
-            throw new NotImplementedException();
-        }
 
-        /// <summary>
-        /// Get MAP Product Lines
-        /// </summary>
-        /// <returns>Returns MAP product lines</returns>
         public List<Models.ProductLine> getProductLine()
         {
             return this.Database.SqlQuery<Models.ProductLine>("usp_GetProductLine").ToList();
+        }
+
+        public List<Models.DataSource> getDataSource(string EntityCode)
+        {
+            return this.Database.SqlQuery<Models.DataSource>("usp_GetDataSource @p0", EntityCode).ToList();
+        }
+
+        public List<Models.DataSourceParameters> getDataSourceParameters(int DataSourceParameterID )
+        {
+            return this.Database.SqlQuery<Models.DataSourceParameters>("usp_GetDataSourceParameters @p0", DataSourceParameterID).ToList();
         }
 
     }
