@@ -129,6 +129,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="DataAccess\Report.DataContext.cs" />
     <Compile Include="Logic\Credentials.cs" />
     <Compile Include="Logic\ServerEnvironment.cs" />
     <Compile Include="Controllers\Environment.Controller.cs" />
@@ -145,17 +146,18 @@
     </Compile>
     <Compile Include="Models\Connection.Model.cs" />
     <Compile Include="Models\ProductLine.Model.cs" />
+    <Compile Include="Models\Report.Model.cs" />
     <Compile Include="SQL\Repository.cs" />
-    <Compile Include="_Logger\BussinessLogic\Logger.cs" />
+    <Compile Include="_Logger\Logic\Logger.cs" />
     <Compile Include="_Logger\DataAccess\Logger.DataContext.cs" />
-    <Compile Include="_PACT Security\BusinessLogic\ServerVariables.cs" />
-    <Compile Include="_PACT Security\BusinessLogic\UserActive.cs" />
+    <Compile Include="_PACT Security\Logic\ServerVariables.cs" />
+    <Compile Include="_PACT Security\Logic\UserActive.cs" />
     <Compile Include="_PACT Security\Models\UserActive.Model.cs" />
     <Compile Include="_PACT Security\Models\UserInfo.Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="_PACT Security\Controllers\User.Controller.cs" />
     <Compile Include="_PACT Security\DataAccess\Security.DataContext.cs" />
-    <Compile Include="_PACT Security\BusinessLogic\UserInfo.cs" />
+    <Compile Include="_PACT Security\Logic\UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />

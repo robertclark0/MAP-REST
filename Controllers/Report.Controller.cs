@@ -13,10 +13,23 @@ namespace MAP_REST.Controllers
     public class ReportController : ApiController
     {
 
-        [Route("reports")]
+        [Route("report")]
         [HttpPost]
         public HttpResponseMessage Report([FromBody] dynamic postObject)
         {
+
+            switch ((string)postObject.type)
+            {
+                case "reportList":
+                    break;
+                case "getReport":
+                    break;
+                case "updateReport":
+                    break;
+                case "deleteReport":
+                    break;
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, "reports");
         }
 
