@@ -1,4 +1,234 @@
-﻿USE [MAP]
+﻿USE [CHUP_MAP]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_Rpt_DrillDown]    Script Date: 08/29/2016 14:36:21 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_Rpt_DrillDown]
+(
+
+@ColLevel_1_Value varchar(max) = NULL, --default value DMIS
+@ColLevel_2_Value varchar(max) = NULL, --default value MEPRS
+@ColLevel_3_Value varchar(max) = NULL, --default value Provider
+@ColLevel_4_Value varchar(max) = NULL, --default value Patient
+@CHUP_Flag	int = 0,
+@HU_Flag	int = 0,
+@Pain_Flag	int = 0,
+@Poly_Flag int = 0,
+@FY int,
+@FM int,
+@RowStart int = 0,
+@RowEnd	int = 0
+
+)
+as
+
+BEGIN
+
+-- CHUP Flag Settings
+IF @CHUP_Flag = 1
+	BEGIN
+		SET @HU_Flag = 1
+		SET @Pain_Flag = 1
+		SET @Poly_Flag = 1
+	END
+
+-- Show all patients by a Provider Param: Provider
+IF (@ColLevel_4_Value IS NOT NULL) 
+
+BEGIN
+PRINT 'Level 4'
+SELECT
+	*
+FROM
+(
+	SELECT
+		ROW_NUMBER() OVER ( ORDER BY PCMNPI,TotalEnc ASC ) AS RowNum, *
+	FROM
+	(
+	SELECT PCMNAME as PCM_NAME
+		,PCMNPI
+		,MED_HOME_MEPRS
+		,[SPONSSN] as SPON_SSN
+		,[SSN]
+		,[GENDER]
+		,[PAYPLAN] as PAY_PLAN
+		,[PAYGRD] as PAY_GRD
+		,c.[EDIPN] as [EDIPN]
+		,[BenCat] as BEN_CAT
+		,[AGE]
+		,[DMISID] as DMIS_ID
+		,SUBSTRING(NAME,1,CHARINDEX(' ',[NAME])) as LNAME
+		,LTRIM(SUBSTRING(NAME,CHARINDEX(' ',[NAME]),LEN(NAME))) as FNAME
+		,SUBSTRING(NAME,1,CHARINDEX(' ',[NAME])) +', '+ LTRIM(SUBSTRING(NAME,CHARINDEX(' ',[NAME]),LEN(NAME))) as [NAME]
+		,TotalEnc
+		,s.[PRODNAME] as [PROD_NAME]
+		,s.[OpiateCnt] as [OPIATE_CNT] 
+		,s.[Count] as [CNT]
+	FROM [CHUP_MAP].[dbo].[CHUP_PARTITIONED] c
+	JOIN [Load].[ScriptCnt] s
+		ON c.EDIPN = s.EDIPN
+	WHERE Region= @ColLevel_1_Value
+	AND DMISID  IN (SELECT * FROM dbo.GetVarCharTableFromCSVList( @ColLevel_2_Value))
+	AND MED_HOME_MEPRS IN (SELECT * FROM dbo.GetVarCharTableFromCSVList( @ColLevel_3_Value))
+	AND PCMNPI IN (SELECT * FROM dbo.GetVarCharTableFromCSVList( @ColLevel_4_Value))
+	AND s.[OpiateCnt] > 0
+	AND CHUP = @CHUP_Flag
+	AND HUFlag = @HU_Flag
+	AND PainFlag = @Pain_Flag
+	AND PolyFlag = @Poly_Flag
+	AND FY = @FY
+	AND FM = @FM
+	) AS
+		InitialResult
+) AS
+	RowConstrainedResult
+WHERE
+	RowNum >= @RowStart
+    AND RowNum <= @RowEnd
+ORDER BY
+	RowNum, TotalEnc
+
+END
+
+-- Show all Providers by a MEPRS  Param: MEPRS
+IF (@ColLevel_3_Value IS NOT NULL AND @ColLevel_4_Value IS NULL) 
+
+BEGIN
+PRINT 'Level 3'
+
+SELECT
+	*
+FROM
+(
+	SELECT
+		ROW_NUMBER() OVER ( ORDER BY MED_HOME_MEPRS, CNT DESC ) AS RowNum, *
+	FROM
+	(
+	SELECT DMISID as DMIS_ID, DMISNAME as DMIS_NAME, ISNULL ( PCMNAME , 'NULL' )  AS PCM_NAME, PCMNPI, MED_HOME_MEPRS,
+	COUNT(1) AS CNT
+	FROM CHUP_MAP.DBO.CHUP_PARTITIONED
+	WHERE Region= @ColLevel_1_Value
+	AND DMISID IN (SELECT * FROM dbo.GetVarCharTableFromCSVList( @ColLevel_2_Value))
+	AND MED_HOME_MEPRS IN (SELECT * FROM dbo.GetVarCharTableFromCSVList( @ColLevel_3_Value))
+	AND OpiateCnt > 0
+	AND CHUP = @CHUP_Flag
+	AND HUFlag = @HU_Flag
+	AND PainFlag = @Pain_Flag
+	AND PolyFlag = @Poly_Flag
+	AND FY = @FY
+	AND FM = @FM
+	GROUP BY DMISID, PCMNAME, PCMNPI, MED_HOME_MEPRS, DMISNAME
+	) AS
+		InitialResult
+) AS
+	RowConstrainedResult
+WHERE
+	RowNum >= @RowStart
+    AND RowNum <= @RowEnd
+ORDER BY
+	RowNum ASC, MED_HOME_MEPRS DESC
+END
+
+-- Show all MEPRS by a DMIS  Param: DMISID
+IF (@ColLevel_2_Value IS NOT NULL AND @ColLevel_3_Value IS NULL) 
+
+BEGIN
+PRINT 'Level 2'
+SELECT
+	*
+FROM
+(
+	SELECT
+		ROW_NUMBER() OVER ( ORDER BY DMIS_ID, CNT DESC ) AS RowNum, *
+	FROM
+	(
+	SELECT DMISID as DMIS_ID, DMISNAME as DMIS_NAME, ISNULL ( MED_HOME_MEPRS , 'NULL' )  AS MED_HOME_MEPRS, COUNT(1) AS CNT
+	FROM CHUP_MAP.DBO.CHUP_PARTITIONED 
+	WHERE Region= @ColLevel_1_Value
+	AND DMISID IN (SELECT * FROM dbo.GetVarCharTableFromCSVList( @ColLevel_2_Value))
+	AND OpiateCnt > 0
+	AND CHUP = @CHUP_Flag
+	AND HUFlag = @HU_Flag
+	AND PainFlag = @Pain_Flag
+	AND PolyFlag = @Poly_Flag
+	AND FY = @FY
+	AND FM = @FM
+	GROUP BY DMISID, MED_HOME_MEPRS, DMISNAME
+	) AS
+		InitialResult
+) AS
+	RowConstrainedResult
+WHERE
+	RowNum >= @RowStart
+    AND RowNum <= @RowEnd
+ORDER BY
+	RowNum
+END
+
+
+-- Show all DMIS by a Region Param: Region
+IF (@ColLevel_1_Value IS NOT NULL AND @ColLevel_2_Value IS NULL) 
+BEGIN
+	PRINT 'Level 1'
+	SELECT
+	*
+FROM
+(
+	SELECT
+		ROW_NUMBER() OVER ( ORDER BY REGION, CNT DESC ) AS RowNum, *
+	FROM
+	(
+	SELECT REGION, DMISID as DMIS_ID, DMISNAME as DMIS_NAME, 1 as IS_CHILD, COUNT(1) as CNT,
+	UPPER(SUBSTRING (convert(varchar, ReportDate, 106) ,3 , 100) ) as REPORT_DATE
+	FROM [CHUP_MAP].[dbo].[CHUP_PARTITIONED]
+	WHERE  Region= @ColLevel_1_Value
+	AND OpiateCnt > 0
+	AND CHUP = @CHUP_Flag
+	AND HUFlag = @HU_Flag
+	AND PainFlag = @Pain_Flag
+	AND PolyFlag = @Poly_Flag
+	AND FY = @FY
+	AND FM = @FM
+	GROUP BY REGION, DMISID, DMISNAME, REPORTDATE
+		) AS
+		InitialResult
+) AS
+	RowConstrainedResult
+WHERE
+	RowNum >= @RowStart
+    AND RowNum <= @RowEnd
+ORDER BY
+	RowNum
+END
+
+
+
+--- Show all Regions Param: None
+IF (@ColLevel_1_Value IS NULL) 
+
+BEGIN
+	PRINT 'Level 0'
+	SELECT UPPER(SUBSTRING (CONVERT(VARCHAR, REPORTDATE, 106) ,3 , 100) ) AS REPORT_DATE, 
+	REGION, COUNT(1) AS CNT	
+	FROM [CHUP_MAP].[dbo].[CHUP_PARTITIONED]
+	WHERE OpiateCnt > 0 
+	AND CHUP = @CHUP_Flag
+	AND HUFlag = @HU_Flag
+	AND PainFlag = @Pain_Flag
+	AND PolyFlag = @Poly_Flag
+	AND FY = @FY
+	AND FM = @FM
+	GROUP BY REPORTDATE, REGION
+	ORDER BY Cnt DESC
+END
+
+END
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+USE [MAP]
 GO
 /****** Object:  StoredProcedure [dbo].[usp_CreateReport]    Script Date: 08/24/2016 12:56:02 ******/
 SET ANSI_NULLS ON
