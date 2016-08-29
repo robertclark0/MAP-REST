@@ -23,18 +23,19 @@ namespace MAP_REST.DEMO
             var db = new CHUPDataContext(connection.ConnectionString);
 
             var result = new List<DEMO.CHUP>();
-            result = db.getCHUP(postObject.chup.region, 
-                postObject.chup.DMISID,
-                postObject.chup.MEPRSCode,
-                postObject.chup.PCMNPI,
-                postObject.chup.ChupFlag,
-                postObject.chup.HUFlag,
-                postObject.chup.PainFlag,
-                postObject.chup.PolyFlag,
-                postObject.chup.FY,
-                postObject.chup.FM,
-                postObject.chup.RowStart,
-                postObject.chup.RowEnd);
+            result = db.getCHUP(
+                (string)postObject.region,
+                (string)postObject.DMISID,
+                (string)postObject.MEPRSCode,
+                (string)postObject.PCMNPI,
+                (int)postObject.ChupFlag,
+                (int)postObject.HUFlag,
+                (int)postObject.PainFlag,
+                (int)postObject.PolyFlag,
+                (int)postObject.FY,
+                (int)postObject.FM,
+                (int)postObject.RowStart,
+                (int)postObject.RowEnd);
 
             //Log.ServerLog(Log.GenerateServerSessionID(), "report", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });

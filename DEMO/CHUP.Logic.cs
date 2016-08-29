@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MAP_REST.DEMO
 {
-    public class CHUPLogic
+    public static class CHUPLogic
     {
 
     }
