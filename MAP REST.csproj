@@ -130,6 +130,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
+    <Compile Include="DEMO\CHUP.DataContext.cs" />
+    <Compile Include="DEMO\CHUP.Controller.cs" />
+    <Compile Include="DEMO\CHUP.model.cs" />
     <Compile Include="Logic\Credentials.cs" />
     <Compile Include="Logic\ServerEnvironment.cs" />
     <Compile Include="Controllers\Environment.Controller.cs" />
