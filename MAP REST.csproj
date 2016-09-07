@@ -158,6 +158,7 @@
     <Compile Include="_PACT Security\Controllers\User.Controller.cs" />
     <Compile Include="_PACT Security\DataAccess\Security.DataContext.cs" />
     <Compile Include="_PACT Security\Logic\UserInfo.cs" />
+    <Compile Include="_QueryBuilder\QueryBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
