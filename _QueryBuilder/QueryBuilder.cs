@@ -73,11 +73,20 @@ namespace MAP_REST.QueryBuilder
         }
         private string SelectCaseCount(dynamic selection)
         {
-            return String.Format("SUM(CASE WHEN [{0}] THEN 1 ELSE 0 END) AS [{1}]", null, selection.aggregate.allias);
+            return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", aggregateOperators(selection), selection.aggregate.allias);
         }
         private string SelectCaseSum(dynamic selection)
         {
-            return String.Format("ROUND(SUM(CASE WHEN [{0}] THEN [{1}] ELSE 0 END),{2}) AS [{3}]", null, selection.name, selection.aggregate.round, selection.aggregate.allias);
+            return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", aggregateOperators(selection), selection.name, selection.aggregate.round, selection.aggregate.allias);
+        }
+        private string aggregateOperators(dynamic selection)
+        {
+            var operators = new List<string>();
+            foreach (dynamic operation in selection.aggregate.operators)
+            {
+
+            }
+            return "";
         }
 
         private string Order(dynamic selection)
