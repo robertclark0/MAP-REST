@@ -59,6 +59,7 @@ namespace MAP_REST.QueryBuilder
             return querySelections.ToArray();
         }
 
+        //SELECT
         private string Select(dynamic selection)
         {
             return String.Format("[{0}]", selection.name);
@@ -89,6 +90,7 @@ namespace MAP_REST.QueryBuilder
             return "";
         }
 
+        //ORDER
         private string Order(dynamic selection)
         {
             return String.Format("{0} {1}", selection.name, selection.order);
