@@ -9,9 +9,39 @@ namespace MAP_REST.QueryBuilder
     {
         public string BuildQueryString(dynamic queryOjbect)
         {
+            bool aggregateFlag = queryOjbect.aggregation.enabled;
+            bool paginationFlag = queryOjbect.pagination.enabled;
 
             string[] selections = BuildQuery(queryOjbect);
-            return selections[0];
+
+            string query = String.Empty;
+            var SQLTemplate = new QueryBuilder.SQLTemplate();
+
+            if (aggregateFlag && paginationFlag)
+            {
+                query = String.Format(SQLTemplate.PaginatedGrouping
+                    , selections[0]
+                    , "Table"
+                    , "Filters"
+                    , selections[1]
+                    , selections[2]
+                    , queryOjbect.pagination.page, queryOjbect.pagination.range);
+            }
+            else if (aggregateFlag)
+            {
+                query = SQLTemplate.Grouping;
+            }
+            else if (paginationFlag)
+            {
+                query = SQLTemplate.Pagination;
+            }
+            else
+            {
+                query = SQLTemplate.Default;
+            }
+
+            
+            return query;
         }
 
         private string[] BuildQuery(dynamic queryOjbect)
@@ -33,15 +63,19 @@ namespace MAP_REST.QueryBuilder
                         {
                             case "count":
                                 querySelections.Add(SelectCount(selection));
+                                queryOrdering.Add(Order(selection, true));                                
                                 break;
                             case "sum":
                                 querySelections.Add(SelectSum(selection));
+                                queryOrdering.Add(Order(selection, true));   
                                 break;
                             case "case-count":
                                 querySelections.Add(SelectCaseCount(selection));
+                                queryOrdering.Add(Order(selection, true));   
                                 break;
                             case "case-sum":
                                 querySelections.Add(SelectCaseSum(selection));
+                                queryOrdering.Add(Order(selection, true));   
                                 break;
                         }
                     }
@@ -49,6 +83,7 @@ namespace MAP_REST.QueryBuilder
                     {
                         querySelections.Add(Select(selection));
                         queryOrdering.Add(Order(selection));
+                        queryGrouping.Add(Select(selection));
                     }
                 }
                 else
@@ -59,7 +94,9 @@ namespace MAP_REST.QueryBuilder
             }
 
             var selections = String.Join(", ", querySelections);
-            return new string[]{selections, null, null};
+            var grouping = String.Join(", ", queryGrouping);
+            var ordering = String.Join(", ", queryOrdering);
+            return new string[] { selections, grouping, ordering };
         }
 
         //SELECT
@@ -126,9 +163,16 @@ namespace MAP_REST.QueryBuilder
         }
 
         //ORDER
-        private string Order(dynamic selection)
+        private string Order(dynamic selection, bool aggregate = false)
         {
-            return String.Format("{0} {1}", selection.name, selection.order);
+            if (aggregate)
+            {
+                return String.Format("[{0}] {1}", selection.aggregation.allias, selection.order);
+            }
+            else
+            {
+                return String.Format("[{0}] {1}", selection.name, selection.order);
+            }            
         }
     }
 }

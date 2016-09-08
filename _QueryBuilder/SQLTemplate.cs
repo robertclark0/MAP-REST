@@ -36,8 +36,8 @@ namespace MAP_REST.QueryBuilder
             "FROM                                                               " +
             "(                                                                  " +
             "   SELECT                                                          " +
-            "       ROW_NUMBER() OVER ( ORDER BY {0}, %%physloc%% ) AS RowNum   " +
-            "       ,*                                                          " +
+            "       ROW_NUMBER() OVER ( ORDER BY {3}, %%physloc%% ) AS RowNum   " +
+            "       ,{0}                                                        " +
             "   FROM                                                            " +
             "	    {1}                                                         " +
             "   WHERE                                                           " +
@@ -45,10 +45,10 @@ namespace MAP_REST.QueryBuilder
             ") AS                                                               " +
             "   RowConstrainedResult                                            " +
             "WHERE                                                              " +
-            "   RowNum >= {3}                                                   " +
-            "   AND RowNum <= {4}                                               " +
+            "   RowNum >= {4}                                                   " +
+            "   AND RowNum <= {5}                                               " +
             "ORDER BY                                                           " +
-            "   {5}                                                             " ;
+            "   RowNum                                                          " ;
 
         string _paginatedGrouping =
             "SELECT                                                             " +
@@ -56,25 +56,25 @@ namespace MAP_REST.QueryBuilder
             "FROM                                                               " +
             "(                                                                  " +
 	        "   SELECT                                                          " +
-		    "       ROW_NUMBER() OVER ( ORDER BY {0} ) AS RowNum                " +
+		    "       ROW_NUMBER() OVER ( ORDER BY {4} ) AS RowNum                " +
             "       ,*                                                          " +
 	        "   FROM                                                            " +
 	        "   (                                                               " +
 		    "       SELECT                                                      " +
-			"           {1}                                                     " +
+			"           {0}                                                     " +
 		    "       FROM                                                        " +
-			"           {2}                                                     " +
+			"           {1}                                                     " +
 		    "       WHERE                                                       " +
-			"           {3}                                                     " +
+			"           {2}                                                     " +
 		    "       GROUP BY                                                    " +
-			"           TmtParentName                                           " +
+			"           {3}                                                     " +
 	        "   ) AS                                                            " +
 		    "       InitialResult                                               " +
             ") AS                                                               " +
 	        "   RowConstrainedResult                                            " +
             "WHERE                                                              " +
-	        "   RowNum >= {4}                                                   " +
-            "   AND RowNum <= {5}                                               " +
+	        "   RowNum >= {5}                                                   " +
+            "   AND RowNum <= {6}                                               " +
             "ORDER BY                                                           " +
 	        "   RowNum                                                          " ;
 
