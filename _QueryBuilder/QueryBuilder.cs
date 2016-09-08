@@ -9,7 +9,8 @@ namespace MAP_REST.QueryBuilder
     {
         public string BuildQueryString(dynamic queryOjbect)
         {
-            return "";
+            string[] selections = BuildQuery(queryOjbect);
+            return String.Join(", ", selections);
         }
 
         private string[] BuildQuery(dynamic queryOjbect)
@@ -25,9 +26,9 @@ namespace MAP_REST.QueryBuilder
             {
                 if (aggregateFlag)
                 {
-                    if (selection.aggregate)
+                    if ((bool)selection.aggregate)
                     {
-                        switch ((string)selection.aggregate.type)
+                        switch ((string)selection.aggregation.type)
                         {
                             case "count":
                                 querySelections.Add(SelectCount(selection));
@@ -66,28 +67,60 @@ namespace MAP_REST.QueryBuilder
         }
         private string SelectCount(dynamic selection)
         {
-            return String.Format("COUNT([{0}]) AS [{0}]", selection.aggregate.allias);
+            return String.Format("COUNT([{0}]) AS [{0}]", selection.aggregation.allias);
         }
         private string SelectSum(dynamic selection)
         {
-            return String.Format("SUM([{0}]) AS [{0}]", selection.aggregate.allias);
+            return String.Format("SUM([{0}]) AS [{0}]", selection.aggregation.allias);
         }
         private string SelectCaseCount(dynamic selection)
         {
-            return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", aggregateOperators(selection), selection.aggregate.allias);
+            return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", aggregateOperators(selection), selection.aggregation.allias);
         }
         private string SelectCaseSum(dynamic selection)
         {
-            return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", aggregateOperators(selection), selection.name, selection.aggregate.round, selection.aggregate.allias);
+            return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", aggregateOperators(selection), selection.name, selection.aggregation.round, selection.aggregation.allias);
         }
         private string aggregateOperators(dynamic selection)
         {
             var operators = new List<string>();
-            foreach (dynamic operation in selection.aggregate.operators)
+            foreach (dynamic operation in selection.aggregation.operators)
             {
-
+                switch ((string)operation.type)
+                {
+                    case "greater":
+                        operators.Add(String.Format("[{0}] > {1}", selection.name, operatorValueType(operation, 0)));
+                        break;
+                    case "less":
+                        operators.Add(String.Format("[{0}] < {1}", selection.name, operatorValueType(operation, 0)));
+                        break;
+                    case "greaterEqual":
+                        operators.Add(String.Format("[{0}] >= {1}", selection.name, operatorValueType(operation, 0)));
+                        break;
+                    case "lessEqual":
+                        operators.Add(String.Format("[{0}] <= {1}", selection.name, operatorValueType(operation, 0)));
+                        break;
+                    case "equal":
+                        operators.Add(String.Format("[{0}] = {1}", selection.name, operatorValueType(operation, 0)));
+                        break;
+                    case "in":
+                        break;
+                    case "between":
+                        operators.Add(String.Format("[{0}] BETWEEN {1} AND {2}", selection.name, operatorValueType(operation, 0), operatorValueType(operation, 1)));
+                        break;
+                }
             }
-            return "";
+            return String.Join(" AND ", operators);
+        }
+        private string operatorValueType(dynamic operation, int valueIndex)
+        {
+            switch ((string)operation.valueType)
+            {
+                case "string":
+                    return String.Format("'{0}'", operation.values[valueIndex]);
+                default:
+                    return String.Format("{0}", operation.values[valueIndex]);
+            }
         }
 
         //ORDER

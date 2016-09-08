@@ -7,6 +7,7 @@ using System.Web.Http;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
 using Logger.BusinessLogic;
+using MAP_REST.QueryBuilder;
 
 
 namespace MAP_REST.Controllers
@@ -25,7 +26,10 @@ namespace MAP_REST.Controllers
         [HttpPost]
         public HttpResponseMessage Query([FromBody] dynamic postObject)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, "query");
+            var query = new QueryBuilder.QueryBuilder();
+            var result = query.BuildQueryString(postObject.query);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
 
     }
