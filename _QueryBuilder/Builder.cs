@@ -5,12 +5,13 @@ using System.Web;
 
 namespace MAP_REST.QueryBuilder
 {
-    public class QueryBuilder
+    public class Builder
     {
         public string BuildQueryString(dynamic queryOjbect)
         {
+
             string[] selections = BuildQuery(queryOjbect);
-            return String.Join(", ", selections);
+            return selections[0];
         }
 
         private string[] BuildQuery(dynamic queryOjbect)
@@ -57,7 +58,8 @@ namespace MAP_REST.QueryBuilder
                 }
             }
 
-            return querySelections.ToArray();
+            var selections = String.Join(", ", querySelections);
+            return new string[]{selections, null, null};
         }
 
         //SELECT

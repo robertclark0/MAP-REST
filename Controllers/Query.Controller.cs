@@ -26,7 +26,7 @@ namespace MAP_REST.Controllers
         [HttpPost]
         public HttpResponseMessage Query([FromBody] dynamic postObject)
         {
-            var query = new QueryBuilder.QueryBuilder();
+            var query = new QueryBuilder.Builder();
             var result = query.BuildQueryString(postObject.query);
 
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
