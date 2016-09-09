@@ -12,7 +12,7 @@ namespace MAP_REST.QueryBuilder
             bool aggregateFlag = queryOjbect.aggregation.enabled;
             bool paginationFlag = queryOjbect.pagination.enabled;
 
-            string[] selections = BuildQuery(queryOjbect);
+            string[] selections = BuildSelections(queryOjbect);
 
             string query = String.Empty;
             var SQLTemplate = new QueryBuilder.SQLTemplate();
@@ -21,30 +21,44 @@ namespace MAP_REST.QueryBuilder
             {
                 query = String.Format(SQLTemplate.PaginatedGrouping
                     , selections[0]
-                    , "Table"
-                    , "Filters"
+                    , queryOjbect.source.name
+                    , "[Region] = 'RHC-A(P)'"
                     , selections[1]
                     , selections[2]
-                    , queryOjbect.pagination.page, queryOjbect.pagination.range);
+                    , queryOjbect.pagination.page
+                    , queryOjbect.pagination.range);
             }
             else if (aggregateFlag)
             {
-                query = SQLTemplate.Grouping;
+                query = String.Format(SQLTemplate.Grouping
+                    , selections[0]
+                    , queryOjbect.source.name
+                    , "[Region] = 'RHC-A(P)'"
+                    , selections[1]
+                    , selections[2]);
             }
             else if (paginationFlag)
             {
-                query = SQLTemplate.Pagination;
+                query = String.Format(SQLTemplate.Pagination
+                    , selections[0]
+                    , queryOjbect.source.name
+                    , "[Region] = 'RHC-A(P)'"
+                    , selections[2]
+                    , queryOjbect.pagination.page
+                    , queryOjbect.pagination.range);
             }
             else
             {
-                query = SQLTemplate.Default;
+                query = String.Format(SQLTemplate.Default
+                    , selections[0]
+                    , queryOjbect.source.name
+                    , "[Region] = 'RHC-A(P)'"
+                    , selections[2]);
             }
-
-            
             return query;
         }
 
-        private string[] BuildQuery(dynamic queryOjbect)
+        private string[] BuildSelections(dynamic queryOjbect)
         {
             var querySelections = new List<string>();
             var queryGrouping = new List<string>();
@@ -63,19 +77,19 @@ namespace MAP_REST.QueryBuilder
                         {
                             case "count":
                                 querySelections.Add(SelectCount(selection));
-                                queryOrdering.Add(Order(selection, true));                                
+                                queryOrdering.Add(Order(selection, true));
                                 break;
                             case "sum":
                                 querySelections.Add(SelectSum(selection));
-                                queryOrdering.Add(Order(selection, true));   
+                                queryOrdering.Add(Order(selection, true));
                                 break;
                             case "case-count":
                                 querySelections.Add(SelectCaseCount(selection));
-                                queryOrdering.Add(Order(selection, true));   
+                                queryOrdering.Add(Order(selection, true));
                                 break;
                             case "case-sum":
                                 querySelections.Add(SelectCaseSum(selection));
-                                queryOrdering.Add(Order(selection, true));   
+                                queryOrdering.Add(Order(selection, true));
                                 break;
                         }
                     }
@@ -88,8 +102,11 @@ namespace MAP_REST.QueryBuilder
                 }
                 else
                 {
-                    querySelections.Add(Select(selection));
-                    queryOrdering.Add(Order(selection));
+                    if (!(bool)(selection.aggregate))
+                    {
+                        querySelections.Add(Select(selection));
+                        queryOrdering.Add(Order(selection));
+                    }
                 }
             }
 
@@ -172,7 +189,7 @@ namespace MAP_REST.QueryBuilder
             else
             {
                 return String.Format("[{0}] {1}", selection.name, selection.order);
-            }            
+            }
         }
     }
 }
