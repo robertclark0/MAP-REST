@@ -16,7 +16,7 @@ namespace MAP_REST.QueryBuilder
             "WHERE                                                              " +
             "   {2}                                                             " +
             "ORDER BY                                                           " +
-            "   {4}                                                             " ;
+            "   {3}                                                             " ;
 
         private string _grouping =
             "SELECT                                                             " +
