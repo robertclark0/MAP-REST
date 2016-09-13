@@ -10,13 +10,15 @@ namespace MAP_REST.BusinessLogic
 {
     public static class Credentials
     {
-        public static Connection getConnectionString(string entityCode)
+        public static Connection getConnectionString(string entityCode, string userType = "U")
         {
             string serverName = ServerVariables.GetServerVariable("SERVER_NAME");
             string environmentCode = ServerEnvironment.serverNametoEnvCode(serverName);
 
+            //MAYBE get userType programatically here
+
             var db = new ConnectionStringDataContext();
-            return db.getConnectionString(entityCode, environmentCode);
+            return db.getConnectionString(entityCode, environmentCode, userType);
         }
     }
 }

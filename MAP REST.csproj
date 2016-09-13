@@ -129,6 +129,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="DataAccess\Query.DataContext.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
     <Compile Include="Logic\Credentials.cs" />
     <Compile Include="Logic\ServerEnvironment.cs" />
