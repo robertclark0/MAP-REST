@@ -129,6 +129,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="DataAccess\Download.DataContext.cs" />
     <Compile Include="DataAccess\Query.DataContext.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
     <Compile Include="Logic\Credentials.cs" />
@@ -147,6 +148,7 @@
     </Compile>
     <Compile Include="Models\Connection.Model.cs" />
     <Compile Include="Models\ProductLine.Model.cs" />
+    <Compile Include="Models\QueryJSON.Model.cs" />
     <Compile Include="Models\Report.Model.cs" />
     <Compile Include="SQL\Repository.cs" />
     <Compile Include="_Logger\Logic\Logger.cs" />

@@ -57,5 +57,38 @@ namespace MAP_REST.DataAccess
             return items;
         }
 
+        public string CSVData(string SQLString)
+        {
+            string csv = string.Empty;
+
+            this.Database.Connection.Open();
+            var cmd = this.Database.Connection.CreateCommand();
+            cmd.CommandText = SQLString;
+
+            var reader = cmd.ExecuteReader();
+            int readerRow = 0;
+            while (reader.Read())
+            {
+                if (readerRow == 0)
+                {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        csv += reader.GetName(i) + ",";
+                    }
+                    csv += "\r\n";
+                }
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    csv += reader[i] + ",";
+                }
+
+                csv += "\r\n";
+                readerRow++;
+            }
+
+            return csv;
+        }
+
     }
 }
