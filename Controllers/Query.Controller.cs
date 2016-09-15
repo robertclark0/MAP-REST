@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using Helpers = System.Web.Helpers;
 using System.IO;
 using Hangfire;
+using System.Threading;
 
 
 namespace MAP_REST.Controllers
@@ -105,6 +106,30 @@ namespace MAP_REST.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
+
+        [Route("hangfire-test")]
+        [HttpGet]
+        public HttpResponseMessage hangfire()
+        {
+            var temp = System.IO.Path.GetTempPath();
+            //sleeping();
+            //BackgroundJob.Enqueue(() => sleeping());
+
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
+        //public void sleeping()
+        //{
+        //    Thread.Sleep(30000);
+        //    System.Diagnostics.Debug.Write("TESTING HANGFIRE!");
+        //}
+
+        //[Route("hangfire-recover")]
+        //[HttpGet]
+        //public HttpResponseMessage hangfireUpdate()
+        //{
+
+        //}
 
     }
 }
