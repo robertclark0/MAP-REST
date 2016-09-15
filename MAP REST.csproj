@@ -168,7 +168,7 @@
     </Compile>
     <Compile Include="Models\Connection.Model.cs" />
     <Compile Include="Models\ProductLine.Model.cs" />
-    <Compile Include="Models\QueryJSON.Model.cs" />
+    <Compile Include="Models\DownloadStatus.Model.cs" />
     <Compile Include="Models\Report.Model.cs" />
     <Compile Include="SQL\Repository.cs" />
     <Compile Include="Startup.cs" />

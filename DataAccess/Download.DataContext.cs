@@ -15,17 +15,21 @@ namespace MAP_REST.DataAccess
             : base(nameOrConnectionString)
         { }
 
-        public void setQueryJSON(string GUID, string JSON)
+        public void setDownloadStatus(string GUID, string JSON, string status)
         {
-            this.Database.ExecuteSqlCommand("usp_InsDownload @p0, @p1", GUID, JSON);
+            this.Database.ExecuteSqlCommand("usp_InsDownload @p0, @p1, @p2", GUID, JSON, status);
         }
-        public Models.QueryJSON getQueryJSON(string GUID)
+        public Models.DownloadStatus getDownloadStatus(string GUID)
         {
-            return this.Database.SqlQuery<Models.QueryJSON>("usp_GetDownload @p0", GUID).FirstOrDefault();
+            return this.Database.SqlQuery<Models.DownloadStatus>("usp_GetDownload @p0", GUID).FirstOrDefault();
         }
-        public void deleteQueryJSON(string GUID)
+        public void deleteDownloadStatus(string GUID)
         {
             this.Database.ExecuteSqlCommand("usp_DeleteDownload @p0", GUID);
+        }
+        public void updateDownloadStatus(string GUID, string status)
+        {
+            this.Database.ExecuteSqlCommand("usp_UpdateDownload @p0, @p1", GUID, status);
         }
 
     }

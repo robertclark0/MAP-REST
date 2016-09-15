@@ -45,91 +45,59 @@ namespace MAP_REST.Controllers
         }
 
         [Route("download")]
-        [HttpGet]
-        public HttpResponseMessage Download([FromUri] string GUID = "1")
+        [HttpPost]
+        public HttpResponseMessage Download([FromBody] dynamic postObject)
         {
-            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
+            var guid = Guid.NewGuid();
+            string query = Convert.ToString(postObject.query);
 
-            //var db = new DownloadDataContext();
-            //Models.QueryJSON dataResult = db.getQueryJSON(GUID);
-            //dynamic query = Helpers.Json.Decode(dataResult.JSON);
+            BackgroundJob.Enqueue(() => generateDownloadFile(guid.ToString(), query));
 
-            //var builder = new QueryBuilder.Builder();
-            //var queryString = builder.BuildQueryString(query);
-
-            //var connection = Credentials.getConnectionString("TELE360", "U");
-            //var QueryDb = new QueryDataContext(connection.ConnectionString);
-
-            //var result = QueryDb.QueryData(queryString);
-
-
-            //var response = new HttpResponseMessage();
-            //response.Content = new StringContent(csv);
-            //response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            //response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-            //response.Content.Headers.ContentDisposition.FileName = "RecordExport.csv";
-
-            //return response;
-
-            /// +========================== OR
-            
-            //var connection = Credentials.getConnectionString("TELE360", "U");
-            //var QueryDb = new QueryDataContext(connection.ConnectionString);
-            //var CSV = QueryDb.CSVData("SELECT TOP 1000 * FROM TeleHealth_360_CAPER WHERE [FY] = '2016' AND [FM] = '1' ORDER BY [Region] asc, [Gender] asc, [PA_Work_RVU] asc");
-
+            return Request.CreateResponse(HttpStatusCode.OK, new { GUID = guid });
+        }
+        [Route("download")]
+        [HttpGet]
+        public HttpResponseMessage Download(string GUID = "1")
+        {
             string path = System.Web.HttpContext.Current.Server.MapPath("~/Downloads/test.xlsx");
+            var stream = new FileStream(path, FileMode.Open);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK);
-            var stream = new FileStream(path, FileMode.Open);
             result.Content = new StreamContent(stream);
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
             result.Content.Headers.ContentDisposition.FileName = "RecordExport.csv";
+
             return result;
-
         }
 
-        [Route("download")]
-        [HttpPost]
-        public HttpResponseMessage Download([FromBody] dynamic postObject)
+        public void generateDownloadFile(string GUID, string queryObject)
         {
-
+            dynamic query = Helpers.Json.Decode(queryObject);
             var db = new DownloadDataContext();
-            var guid = Guid.NewGuid();
+            db.setDownloadStatus(GUID, new Regex("'").Replace(queryObject, "''"), "started");
 
-            db.setQueryJSON(guid.ToString(), new Regex("'").Replace(Convert.ToString(postObject.query),"''"));
-
-            var result = new
+            try
             {
-                GUID = guid
-            };
-
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+                Thread.Sleep(20000);
+                db.updateDownloadStatus(GUID, "complete");
+            }
+            catch
+            {
+                db.updateDownloadStatus(GUID, "failed");
+            }
         }
 
-        [Route("hangfire-test")]
+        [Route("download-update")]
         [HttpGet]
-        public HttpResponseMessage hangfire()
+        public HttpResponseMessage downloadUpdate(string GUID)
         {
-            var temp = System.IO.Path.GetTempPath();
-            //sleeping();
-            //BackgroundJob.Enqueue(() => sleeping());
+            var db = new DownloadDataContext();
+            Models.DownloadStatus download = db.getDownloadStatus(GUID);
 
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.OK, download);
         }
 
-        //public void sleeping()
-        //{
-        //    Thread.Sleep(30000);
-        //    System.Diagnostics.Debug.Write("TESTING HANGFIRE!");
-        //}
-
-        //[Route("hangfire-recover")]
-        //[HttpGet]
-        //public HttpResponseMessage hangfireUpdate()
-        //{
-
-        //}
 
     }
 }
