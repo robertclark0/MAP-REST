@@ -13,6 +13,7 @@ using MAP_REST.BusinessLogic;
 using System.Text.RegularExpressions;
 using Helpers = System.Web.Helpers;
 using System.IO;
+using Hangfire;
 
 
 namespace MAP_REST.Controllers
@@ -46,6 +47,31 @@ namespace MAP_REST.Controllers
         [HttpGet]
         public HttpResponseMessage Download([FromUri] string GUID = "1")
         {
+            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
+
+            //var db = new DownloadDataContext();
+            //Models.QueryJSON dataResult = db.getQueryJSON(GUID);
+            //dynamic query = Helpers.Json.Decode(dataResult.JSON);
+
+            //var builder = new QueryBuilder.Builder();
+            //var queryString = builder.BuildQueryString(query);
+
+            //var connection = Credentials.getConnectionString("TELE360", "U");
+            //var QueryDb = new QueryDataContext(connection.ConnectionString);
+
+            //var result = QueryDb.QueryData(queryString);
+
+
+            //var response = new HttpResponseMessage();
+            //response.Content = new StringContent(csv);
+            //response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            //response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            //response.Content.Headers.ContentDisposition.FileName = "RecordExport.csv";
+
+            //return response;
+
+            /// +========================== OR
+            
             //var connection = Credentials.getConnectionString("TELE360", "U");
             //var QueryDb = new QueryDataContext(connection.ConnectionString);
             //var CSV = QueryDb.CSVData("SELECT TOP 1000 * FROM TeleHealth_360_CAPER WHERE [FY] = '2016' AND [FM] = '1' ORDER BY [Region] asc, [Gender] asc, [PA_Work_RVU] asc");
