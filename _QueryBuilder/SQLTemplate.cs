@@ -9,7 +9,7 @@ namespace MAP_REST.QueryBuilder
     public class SQLTemplate
     {
         private string _default =
-            "SELECT TOP 1000                                                    " +
+            "SELECT                                                " +
             "   {0}                                                             " +
             "FROM                                                               " +
             "   {1}                                                             " +

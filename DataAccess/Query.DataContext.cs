@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using MAP_REST.Models;
+using System.IO;
 
 namespace MAP_REST.DataAccess
 {
@@ -57,37 +58,38 @@ namespace MAP_REST.DataAccess
             return items;
         }
 
-        public string CSVData(string SQLString)
+        public void QueryCSVWriter(string SQLString, string path)
         {
-            string csv = string.Empty;
-
             this.Database.Connection.Open();
             var cmd = this.Database.Connection.CreateCommand();
             cmd.CommandText = SQLString;
 
             var reader = cmd.ExecuteReader();
             int readerRow = 0;
-            while (reader.Read())
+
+            //using (var writer = new StreamWriter(path))
+            using (StreamWriter writer = File.AppendText(path))
             {
-                if (readerRow == 0)
+                while (reader.Read())
                 {
+                    if (readerRow == 0)
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            writer.Write(reader.GetName(i) + ",");
+                        }
+                        writer.Write("\r\n");
+                    }
+
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        csv += reader.GetName(i) + ",";
+                        writer.Write(reader[i] + ",");
                     }
-                    csv += "\r\n";
-                }
 
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    csv += reader[i] + ",";
+                    writer.Write("\r\n");
+                    readerRow++;
                 }
-
-                csv += "\r\n";
-                readerRow++;
             }
-
-            return csv;
         }
 
     }
