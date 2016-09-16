@@ -5,16 +5,13 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using Logger.BusinessLogic;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
-using Logger.BusinessLogic;
 using MAP_REST.QueryBuilder;
 using MAP_REST.BusinessLogic;
-using System.Text.RegularExpressions;
-using Helpers = System.Web.Helpers;
 using System.IO;
 using Hangfire;
-using System.Threading;
 
 
 namespace MAP_REST.Controllers
@@ -53,7 +50,9 @@ namespace MAP_REST.Controllers
             string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
             var connection = Credentials.getConnectionString("TELE360", "U");
 
-            BackgroundJob.Enqueue(() => generateDownloadFile(guid.ToString(), query, path, connection.ConnectionString));
+            var download = new BusinessLogic.Download();
+
+            BackgroundJob.Enqueue(() => download.generateDownloadFile(guid.ToString(), query, path, connection.ConnectionString));
 
             return Request.CreateResponse(HttpStatusCode.OK, new { GUID = guid });
         }
@@ -61,7 +60,6 @@ namespace MAP_REST.Controllers
         [HttpGet]
         public HttpResponseMessage Download(string GUID)
         {
-            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Downloads/test.xlsx");
             string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
 
             var stream = new FileStream(Path.Combine(path, "MAP_D_" + GUID + ".csv"), FileMode.Open);
@@ -73,33 +71,6 @@ namespace MAP_REST.Controllers
             result.Content.Headers.ContentDisposition.FileName = "RecordExport.csv";
 
             return result;
-        }
-
-        public void generateDownloadFile(string GUID, string queryObject, string filePath, string connectionString)
-        {
-            
-            var db = new DownloadDataContext();
-            db.setDownloadStatus(GUID, new Regex("'").Replace(queryObject, "''"), "started");
-            
-            //try
-            //{
-                
-                //Thread.Sleep(20000);
-                dynamic query = Helpers.Json.Decode(queryObject);
-
-                var builder = new QueryBuilder.Builder();
-                var queryString = builder.BuildQueryString(query);
-                var CSVQuery = new QueryDataContext(connectionString);
-
-                CSVQuery.QueryCSVWriter(queryString, Path.Combine(filePath, "MAP_D_" + GUID + ".csv"));
-
-                db.updateDownloadStatus(GUID, "complete");
-            //}
-            //catch(Exception e)
-            //{
-            //    db.updateDownloadStatus(GUID, "failed");
-            //    System.Diagnostics.Debug.Write(e);
-            //}
         }
 
         [Route("download-update")]

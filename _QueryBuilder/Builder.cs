@@ -7,7 +7,7 @@ namespace MAP_REST.QueryBuilder
 {
     public class Builder
     {
-        public string BuildQueryString(dynamic queryObject)
+        public string BuildQueryString(dynamic queryObject, bool download = false)
         {
             bool aggregateFlag = queryObject.aggregation.enabled;
             bool paginationFlag = queryObject.pagination.enabled;
@@ -18,7 +18,15 @@ namespace MAP_REST.QueryBuilder
             string query = String.Empty;
             var SQLTemplate = new QueryBuilder.SQLTemplate();
 
-            if (aggregateFlag && paginationFlag)
+            if (download)
+            {
+                query = String.Format(SQLTemplate.Unlimited
+                    , selections[0]
+                    , queryObject.source.name
+                    , filters
+                    , selections[2]);
+            }
+            else if (aggregateFlag && paginationFlag)
             {
                 query = String.Format(SQLTemplate.PaginatedGrouping
                     , selections[0]

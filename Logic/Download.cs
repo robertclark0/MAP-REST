@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using Helpers = System.Web.Helpers;
+using MAP_REST.DataAccess;
+using System.Text.RegularExpressions;
+using System.IO;
+using Logger.DataAccess;
+
+namespace MAP_REST.BusinessLogic
+{
+    public class Download
+    {
+        public void generateDownloadFile(string GUID, string queryObject, string filePath, string connectionString)
+        {
+
+            var db = new DownloadDataContext();
+            db.setDownloadStatus(GUID, new Regex("'").Replace(queryObject, "''"), "started");
+
+            try
+            {
+                dynamic query = Helpers.Json.Decode(queryObject);
+
+                var builder = new QueryBuilder.Builder();
+                var queryString = builder.BuildQueryString(query, true);
+                var CSVQuery = new QueryDataContext(connectionString);
+
+                CSVQuery.QueryCSVWriter(queryString, Path.Combine(filePath, "MAP_D_" + GUID + ".csv"));
+
+                db.updateDownloadStatus(GUID, "complete");
+            }
+            catch (Exception e)
+            {
+                db.updateDownloadStatus(GUID, "failed");
+
+                var loggerDB = new LoggerDataContext();
+                loggerDB.insertServerLog(GUID, null, "download", e.ToString());
+
+                System.Diagnostics.Debug.Write(e);
+            }
+        }
+    }
+}

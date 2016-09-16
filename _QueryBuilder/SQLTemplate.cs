@@ -8,8 +8,18 @@ namespace MAP_REST.QueryBuilder
 {
     public class SQLTemplate
     {
+        private string _unlimited =
+            "SELECT                                                             " +
+            "   {0}                                                             " +
+            "FROM                                                               " +
+            "   {1}                                                             " +
+            "WHERE                                                              " +
+            "   {2}                                                             " +
+            "ORDER BY                                                           " +
+            "   {3}                                                             ";
+
         private string _default =
-            "SELECT                                                " +
+            "SELECT TOP 1000                                                    " +
             "   {0}                                                             " +
             "FROM                                                               " +
             "   {1}                                                             " +
@@ -81,6 +91,10 @@ namespace MAP_REST.QueryBuilder
         public string Default
         {
             get { return Regex.Replace(_default, @"\s+", " "); }
+        }
+        public string Unlimited
+        {
+            get { return Regex.Replace(_unlimited, @"\s+", " "); }
         }
         public string Grouping
         {
