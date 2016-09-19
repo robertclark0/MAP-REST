@@ -13,8 +13,7 @@ namespace MAP_REST.QueryBuilder
             "   {0}                                                             " +
             "FROM                                                               " +
             "   {1}                                                             " +
-            "WHERE                                                              " +
-            "   {2}                                                             " +
+            "{2}                                                                " +
             "ORDER BY                                                           " +
             "   {3}                                                             ";
 
@@ -23,8 +22,7 @@ namespace MAP_REST.QueryBuilder
             "   {0}                                                             " +
             "FROM                                                               " +
             "   {1}                                                             " +
-            "WHERE                                                              " +
-            "   {2}                                                             " +
+            "{2}                                                                " +
             "ORDER BY                                                           " +
             "   {3}                                                             " ;
 
@@ -33,8 +31,7 @@ namespace MAP_REST.QueryBuilder
             "   {0}                                                             " +
             "FROM                                                               " +
             "   {1}                                                             " +
-            "WHERE                                                              " +
-            "   {2}                                                             " +
+            "{2}                                                                " +
             "GROUP BY                                                           " +
             "   {3}                                                             " +
             "ORDER BY                                                           " +
@@ -50,8 +47,7 @@ namespace MAP_REST.QueryBuilder
             "       ,{0}                                                        " +
             "   FROM                                                            " +
             "	    {1}                                                         " +
-            "   WHERE                                                           " +
-            "	    {2}                                                         " +
+            "	{2}                                                             " +
             ") AS                                                               " +
             "   RowConstrainedResult                                            " +
             "WHERE                                                              " +
@@ -74,8 +70,7 @@ namespace MAP_REST.QueryBuilder
 			"           {0}                                                     " +
 		    "       FROM                                                        " +
 			"           {1}                                                     " +
-		    "       WHERE                                                       " +
-			"           {2}                                                     " +
+			"       {2}                                                         " +
 		    "       GROUP BY                                                    " +
 			"           {3}                                                     " +
 	        "   ) AS                                                            " +

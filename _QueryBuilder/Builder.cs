@@ -218,7 +218,11 @@ namespace MAP_REST.QueryBuilder
                 queryFilters.Add(Operators(filter, filter.operators));
             }
 
-            return String.Join(" AND ", queryFilters); ;
+            if (queryFilters.Count > 0)
+            {
+                return "WHERE " + String.Join(" AND ", queryFilters); ;
+            }
+            return String.Empty;           
         }
     }
 }

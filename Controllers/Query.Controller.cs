@@ -33,6 +33,7 @@ namespace MAP_REST.Controllers
             var builder = new QueryBuilder.Builder();
             string queryString = builder.BuildQueryString(postObject.query);
 
+            //get query connection
             var connection = Credentials.getConnectionString("TELE360", "U");
             var db = new QueryDataContext(connection.ConnectionString);
 
