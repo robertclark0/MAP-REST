@@ -34,13 +34,18 @@ namespace MAP_REST.Controllers
             string queryString = builder.BuildQueryString(postObject.query);
 
             //get query connection
-            var connection = Credentials.getConnectionString("TELE360", "U");
-            var db = new QueryDataContext(connection.ConnectionString);
+            if (Credentials.getQueryAuth(postObject.query))
+            {
+                var connection = Credentials.getConnectionString("TELE360", "U");
+                var db = new QueryDataContext(connection.ConnectionString);
 
-            System.Diagnostics.Debug.Write(queryString);
-            var result = db.QueryData(queryString);
+                System.Diagnostics.Debug.Write(queryString);
+                var result = db.QueryData(queryString);
 
-            return Request.CreateResponse(HttpStatusCode.OK, new { result });
+                return Request.CreateResponse(HttpStatusCode.OK, new { result });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, "Query Not Authorized");
         }
 
         [Route("download")]
@@ -49,7 +54,6 @@ namespace MAP_REST.Controllers
         {
             var guid = Guid.NewGuid();
             string query = Convert.ToString(postObject.query);
-            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
             string path = System.Web.Configuration.WebConfigurationManager.AppSettings["Download"];
             var connection = Credentials.getConnectionString("TELE360", "U");
 
@@ -63,19 +67,14 @@ namespace MAP_REST.Controllers
         [HttpGet]
         public HttpResponseMessage Download(string GUID)
         {
-            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
-            string path = System.Web.Configuration.WebConfigurationManager.AppSettings["DEV_Download"];
-
-            //var stream = new FileStream(Path.Combine(path, "MAP_D_" + GUID + ".csv"), FileMode.Open);
+            string path = System.Web.Configuration.WebConfigurationManager.AppSettings["Download"];
             string filePath = Path.Combine(path, "MAP_D_" + GUID + ".csv");
 
             var result = new HttpResponseMessage(HttpStatusCode.OK);
-            //result.Content = new StreamContent(stream);
             result.Content = new CustomStreamContent(filePath);
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
             result.Content.Headers.ContentDisposition.FileName = "RecordExport.csv";
-
 
             return result;
         }

@@ -14,6 +14,7 @@ namespace MAP_REST.Models
         public string Icon { get; set; }
         public string IconClass { get; set; }
         public int HasPII { get; set; }
+        public int RestrictionLevel { get; set; }
         public string Module { get; set; }
         public string ModuleName { get; set; }
 

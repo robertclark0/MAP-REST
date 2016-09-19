@@ -6,6 +6,7 @@ using MAP_REST.Models;
 using MAP_REST.DataAccess;
 using PACT.BLL;
 
+
 namespace MAP_REST.BusinessLogic
 {
     public static class Credentials
@@ -19,6 +20,25 @@ namespace MAP_REST.BusinessLogic
 
             var db = new ConnectionStringDataContext();
             return db.getConnectionString(entityCode, environmentCode, userType);
+        }
+
+        public static bool getQueryAuth(dynamic queryObject)
+        {
+            string entityCode = queryObject.source.product;
+
+            var userInfo = UserInfo.GetUserInfo();
+
+            if (userInfo != null)
+            {
+                var result = UserActive.GetUserActive(userInfo);
+
+                if (result.Exists(x => x.productName == entityCode))
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
     }
 }
