@@ -130,9 +130,9 @@ namespace MAP_REST.QueryBuilder
             switch (format)
             {
                 case "count":
-                    return String.Format("COUNT([{0}]) AS [{0}]", selection.aggregation.allias);
+                    return String.Format("COUNT([{0}]) AS [{1}]", selection.name, selection.aggregation.allias);
                 case "sum":
-                    return String.Format("SUM([{0}]) AS [{0}]", selection.aggregation.allias);
+                    return String.Format("SUM([{0}]) AS [{1}]", selection.name, selection.aggregation.allias);
                 case "case-count":
                     return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", Operators(selection, selection.aggregation.operators), selection.aggregation.allias);
                 case "case-sum":
@@ -165,6 +165,7 @@ namespace MAP_REST.QueryBuilder
                         operators.Add(String.Format("[{0}] = {1}", operationObject.name, OperatorValueType(operation, 0)));
                         break;
                     case "in":
+                        operators.Add(String.Format("[{0}] IN ({1})", operationObject.name, OperatorValueJoin(operation)));
                         break;
                     case "between":
                         operators.Add(String.Format("[{0}] BETWEEN {1} AND {2}", operationObject.name, OperatorValueType(operation, 0), OperatorValueType(operation, 1)));
@@ -182,6 +183,18 @@ namespace MAP_REST.QueryBuilder
                 default:
                     return String.Format("{0}", operation.values[valueIndex]);
             }
+        }
+        private string OperatorValueJoin(dynamic operation)
+        {
+            var values = new List<string>();
+            dynamic operationValues = operation.values;
+
+            for (int i = 0; i < operationValues.Count; i++)
+            {
+                values.Add(OperatorValueType(operation, i));
+            }
+
+            return String.Join(", ", values);
         }
         private string Order(dynamic selection, bool aggregate = false)
         {

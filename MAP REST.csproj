@@ -153,6 +153,7 @@
     <Compile Include="DataAccess\Query.DataContext.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
     <Compile Include="Logic\Credentials.cs" />
+    <Compile Include="Logic\CustomStreamContent.cs" />
     <Compile Include="Logic\Download.cs" />
     <Compile Include="Logic\ServerEnvironment.cs" />
     <Compile Include="Controllers\Environment.Controller.cs" />

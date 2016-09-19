@@ -31,11 +31,12 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Query([FromBody] dynamic postObject)
         {
             var builder = new QueryBuilder.Builder();
-            var queryString = builder.BuildQueryString(postObject.query);
+            string queryString = builder.BuildQueryString(postObject.query);
 
             var connection = Credentials.getConnectionString("TELE360", "U");
             var db = new QueryDataContext(connection.ConnectionString);
 
+            System.Diagnostics.Debug.Write(queryString);
             var result = db.QueryData(queryString);
 
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
@@ -47,7 +48,8 @@ namespace MAP_REST.Controllers
         {
             var guid = Guid.NewGuid();
             string query = Convert.ToString(postObject.query);
-            string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
+            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
+            string path = System.Web.Configuration.WebConfigurationManager.AppSettings["Download"];
             var connection = Credentials.getConnectionString("TELE360", "U");
 
             var download = new BusinessLogic.Download();
@@ -60,15 +62,19 @@ namespace MAP_REST.Controllers
         [HttpGet]
         public HttpResponseMessage Download(string GUID)
         {
-            string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
+            //string path = System.Web.HttpContext.Current.Server.MapPath("~/Temp");
+            string path = System.Web.Configuration.WebConfigurationManager.AppSettings["DEV_Download"];
 
-            var stream = new FileStream(Path.Combine(path, "MAP_D_" + GUID + ".csv"), FileMode.Open);
+            //var stream = new FileStream(Path.Combine(path, "MAP_D_" + GUID + ".csv"), FileMode.Open);
+            string filePath = Path.Combine(path, "MAP_D_" + GUID + ".csv");
 
             var result = new HttpResponseMessage(HttpStatusCode.OK);
-            result.Content = new StreamContent(stream);
+            //result.Content = new StreamContent(stream);
+            result.Content = new CustomStreamContent(filePath);
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
             result.Content.Headers.ContentDisposition.FileName = "RecordExport.csv";
+
 
             return result;
         }
