@@ -149,9 +149,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Schema.Controller.cs" />
     <Compile Include="DataAccess\Download.DataContext.cs" />
     <Compile Include="DataAccess\Query.DataContext.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
+    <Compile Include="DataAccess\Schema.DataContext.cs" />
     <Compile Include="Logic\Credentials.cs" />
     <Compile Include="Logic\CustomStreamContent.cs" />
     <Compile Include="Logic\Download.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Models\ProductLine.Model.cs" />
     <Compile Include="Models\DownloadStatus.Model.cs" />
     <Compile Include="Models\Report.Model.cs" />
+    <Compile Include="Models\Schema.Model.cs" />
     <Compile Include="SQL\Repository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="_Logger\Logic\Logger.cs" />
