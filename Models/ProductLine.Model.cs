@@ -7,7 +7,6 @@ namespace MAP_REST.Models
 {
     public class ProductLine
     {
-
         public string Code { get; set; }
         public string Name { get; set; }
         public int Active { get; set; }
@@ -15,9 +14,14 @@ namespace MAP_REST.Models
         public string IconClass { get; set; }
         public int HasPII { get; set; }
         public int RestrictionLevel { get; set; }
-        public string Module { get; set; }
-        public string ModuleName { get; set; }
+        public List<ModuleList> Modules { get; set; }
 
+    }
+
+    public class ModuleList
+    {
+        public string Module { get; set; }
+        public int IsDefault { get; set; }
     }
 
     public class DataSource
@@ -37,4 +41,7 @@ namespace MAP_REST.Models
         public string TableReference { get; set; }
         public string ColumnReference { get; set; }
     }
+
+
+
 }

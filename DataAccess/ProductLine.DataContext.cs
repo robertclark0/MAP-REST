@@ -20,6 +20,10 @@ namespace MAP_REST.DataAccess
         {
             return this.Database.SqlQuery<Models.ProductLine>("usp_GetProductLine").ToList();
         }
+        public List<Models.ModuleList> getModules(string EntityCode)
+        {
+            return this.Database.SqlQuery<Models.ModuleList>("usp_GetProductLineModule @p0", EntityCode).ToList();
+        }
 
         public List<Models.DataSource> getDataSource(string EntityCode)
         {

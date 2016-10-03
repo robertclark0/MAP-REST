@@ -18,8 +18,13 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage ProductLines([FromBody] dynamic postObject)
         {
             var db = new ProductLineDataContext();
-            var result = new List<Models.ProductLine>() ;
+            var result = new List<Models.ProductLine>();
             result = db.getProductLine();
+
+            foreach (ProductLine product in result)
+            {
+                product.Modules = db.getModules(product.Code);
+            }
 
             Log.ServerLog(Log.GenerateServerSessionID(), "product-lines", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
@@ -48,5 +53,6 @@ namespace MAP_REST.Controllers
             //Log.ServerLog(Log.GenerateServerSessionID(), "data-source-parameters", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
+
     }
 }
