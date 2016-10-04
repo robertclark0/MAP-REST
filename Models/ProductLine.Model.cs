@@ -12,10 +12,9 @@ namespace MAP_REST.Models
         public int Active { get; set; }
         public string Icon { get; set; }
         public string IconClass { get; set; }
-        public int HasPII { get; set; }
+        public int Restricted { get; set; }
         public int RestrictionLevel { get; set; }
         public List<ModuleList> Modules { get; set; }
-
     }
 
     public class ModuleList
