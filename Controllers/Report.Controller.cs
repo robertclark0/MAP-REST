@@ -19,7 +19,7 @@ namespace MAP_REST.Controllers
         {
             var db = new ReportDataContext();
             var result = new List<Models.Report>();
-            result = db.getReport(postObject.report.GUID);
+            result = db.getReport(postObject.post.report.GUID);
 
             Log.ServerLog(Log.GenerateServerSessionID(), "report", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
@@ -30,7 +30,7 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Update([FromBody] dynamic postObject)
         {
             var db = new ReportDataContext();
-            db.updateReport(postObject.report.GUID, postObject.report.user, postObject.report.name, postObject.report.type, postObject.report.json);
+            db.updateReport(postObject.post.report.GUID, postObject.post.report.user, postObject.post.report.name, postObject.post.report.type, postObject.post.report.json);
             var result = "updated";
 
             Log.ServerLog(Log.GenerateServerSessionID(), "report/update", Log.SerializeObject(postObject.report.GUID), postObject);
@@ -42,7 +42,7 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Create([FromBody] dynamic postObject)
         {
             var db = new ReportDataContext();
-            db.createReport(postObject.entityCode, postObject.report.GUID, postObject.report.user, postObject.report.name, postObject.report.type, postObject.report.json);
+            db.createReport(postObject.post.entityCode, postObject.post.report.GUID, postObject.post.report.user, postObject.post.report.name, postObject.post.report.type, postObject.post.report.json);
             var result = "created";
 
             Log.ServerLog(Log.GenerateServerSessionID(), "report/create", Log.SerializeObject(postObject.report.GUID), postObject);
@@ -54,7 +54,7 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Delete([FromBody] dynamic postObject)
         {
             var db = new ReportDataContext();
-            db.deleteReport(postObject.report.GUID);
+            db.deleteReport(postObject.post.report.GUID);
             var result = "deleted";
 
             Log.ServerLog(Log.GenerateServerSessionID(), "report/delete", Log.SerializeObject(postObject.report.GUID), postObject);
@@ -67,7 +67,7 @@ namespace MAP_REST.Controllers
         {
             var db = new ReportDataContext();
             var result = new List<Models.ReportList>();
-            result = db.getReportList(postObject.entityCode);
+            result = db.getReportList((string)postObject.post.entityCode);
 
             Log.ServerLog(Log.GenerateServerSessionID(), "report/list", Log.SerializeObject(result), postObject);
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
