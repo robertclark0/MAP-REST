@@ -29,7 +29,7 @@ namespace MAP_REST.DataAccess
 
         public dynamic getColumnDistinct(string entityCode, string tableName, string columnName)
         {
-            var items = new List<List<object>>();
+            var items = new List<object>();
 
             this.Database.Connection.Open();
             var cmd = this.Database.Connection.CreateCommand();
@@ -38,13 +38,7 @@ namespace MAP_REST.DataAccess
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                var item = new List<Object>();
-                items.Add(item);
-
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    item.Add(reader[i]);
-                }
+                items.Add(reader[0]);
             }
 
             return items;
