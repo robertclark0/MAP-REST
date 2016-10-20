@@ -36,7 +36,7 @@ namespace MAP_REST.Controllers
             //get query connection
             if (Credentials.getQueryAuth(postObject.query))
             {
-                var connection = Credentials.getConnectionString("TELE360", "U");
+                var connection = Credentials.getConnectionString("CHUP", "U");
                 var db = new QueryDataContext(connection.ConnectionString);
 
                 System.Diagnostics.Debug.Write(queryString);
@@ -55,7 +55,7 @@ namespace MAP_REST.Controllers
             var guid = Guid.NewGuid();
             string query = Convert.ToString(postObject.query);
             string path = System.Web.Configuration.WebConfigurationManager.AppSettings["Download"];
-            var connection = Credentials.getConnectionString("TELE360", "U");
+            var connection = Credentials.getConnectionString("CHUP", "U");
 
             var download = new BusinessLogic.Download();
 
