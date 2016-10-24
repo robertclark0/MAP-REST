@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 using Helpers = System.Web.Helpers;
 using MAP_REST.DataAccess;
 using System.Text.RegularExpressions;
@@ -20,7 +21,10 @@ namespace MAP_REST.BusinessLogic
 
             try
             {
-                dynamic query = Helpers.Json.Decode(queryObject);
+                //dynamic query = Helpers.Json.Decode(queryObject);
+                //var JSSer = new JavaScriptSerializer();
+                //dynamic query = JSSer.Deserialize<dynamic>(queryObject);
+                dynamic query = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(queryObject);
 
                 var builder = new QueryBuilder.Builder();
                 var queryString = builder.BuildQueryString(query, true);

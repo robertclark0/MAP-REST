@@ -83,7 +83,8 @@ namespace MAP_REST.DataAccess
 
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        writer.Write(reader[i] + ",");
+                        string cell = Convert.ToString(reader[i]).Replace(',', '/');
+                        writer.Write(cell + ",");
                     }
 
                     writer.Write("\r\n");

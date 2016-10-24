@@ -181,6 +181,7 @@
     <Compile Include="_Logger\DataAccess\Logger.DataContext.cs" />
     <Compile Include="_PACT Security\Logic\ServerVariables.cs" />
     <Compile Include="_PACT Security\Logic\UserActive.cs" />
+    <Compile Include="_PACT Security\Logic\UserProduct.cs" />
     <Compile Include="_PACT Security\Models\UserActive.Model.cs" />
     <Compile Include="_PACT Security\Models\UserInfo.Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

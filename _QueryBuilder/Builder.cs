@@ -21,7 +21,6 @@ namespace MAP_REST.QueryBuilder
             if (download)
             {
                 query = String.Format(SQLTemplate.Unlimited
-                    , selections[0]
                     , queryObject.source.name
                     , filters
                     , selections[2]);

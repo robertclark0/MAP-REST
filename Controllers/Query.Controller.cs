@@ -12,6 +12,8 @@ using MAP_REST.QueryBuilder;
 using MAP_REST.BusinessLogic;
 using System.IO;
 using Hangfire;
+using System.Web.Script.Serialization;
+using Helpers = System.Web.Helpers;
 
 
 namespace MAP_REST.Controllers
@@ -53,7 +55,10 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Download([FromBody] dynamic postObject)
         {
             var guid = Guid.NewGuid();
-            string query = Convert.ToString(postObject.query);
+
+            //string query = Convert.ToString(postObject.query);
+            string query = Newtonsoft.Json.JsonConvert.SerializeObject(postObject.query);
+
             string path = System.Web.Configuration.WebConfigurationManager.AppSettings["Download"];
             var connection = Credentials.getConnectionString("CHUP", "U");
 

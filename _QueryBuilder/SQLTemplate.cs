@@ -9,13 +9,12 @@ namespace MAP_REST.QueryBuilder
     public class SQLTemplate
     {
         private string _unlimited =
-            "SELECT                                                             " +
-            "   {0}                                                             " +
+            "SELECT *                                                           " +
             "FROM                                                               " +
-            "   {1}                                                             " +
-            "{2}                                                                " +
+            "   {0}                                                             " +
+            "{1}                                                                " +
             "ORDER BY                                                           " +
-            "   {3}                                                             ";
+            "   {2}                                                             ";
 
         private string _default =
             "SELECT TOP 1000                                                    " +

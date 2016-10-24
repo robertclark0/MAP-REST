@@ -43,5 +43,33 @@ namespace PACT.DAL
             return this.Database.SqlQuery<UserActive>("usp_GetUserActiveProducts @p0, @p1", ID, IDType).ToList();
         }
 
+        //=======================================================================================================
+
+        public User GetUserInfo(string akoUserId, string productName)
+        {
+            return this.Database.SqlQuery<User>("usp_GetUserInfoForProduct @p0, @p1", akoUserId, productName).FirstOrDefault();
+        }
+        public User GetUserInfo(string akoUserId, string productName, string ediPn)
+        {
+            return this.Database.SqlQuery<User>("usp_GetUserInfoForProduct @p0, @p1, @p2", akoUserId, productName, ediPn).FirstOrDefault();
+        }
+        public List<Role> GetUserRoles(string akoUserId, string productName)
+        {
+            return this.Database.SqlQuery<Role>("usp_GetRolesUserProduct @p0, @p1", akoUserId, productName).ToList();
+        }
+        public List<Role> GetUserRoles(string akoUserId, string productName, string ediPn)
+        {
+            return this.Database.SqlQuery<Role>("usp_GetRolesUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
+        }
+        public List<Dmis> GetUserDmis(string akoUserId, string productName)
+        {
+            return this.Database.SqlQuery<Dmis>("usp_GetDMISUserProduct @p0, @p1", akoUserId, productName).ToList();
+        }
+        public List<Dmis> GetUserDmis(string akoUserId, string productName, string ediPn)
+        {
+            return this.Database.SqlQuery<Dmis>("usp_GetDMISUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
+        }
+
+
     }
 }
