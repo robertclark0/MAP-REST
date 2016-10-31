@@ -154,9 +154,11 @@
     <Compile Include="DataAccess\Query.DataContext.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
     <Compile Include="DataAccess\Schema.DataContext.cs" />
+    <Compile Include="DataAccess\SecurityProfile.DataContext.cs" />
     <Compile Include="Logic\Credentials.cs" />
     <Compile Include="Logic\CustomStreamContent.cs" />
     <Compile Include="Logic\Download.cs" />
+    <Compile Include="Logic\SecurityProfile.cs" />
     <Compile Include="Logic\ServerEnvironment.cs" />
     <Compile Include="Controllers\Environment.Controller.cs" />
     <Compile Include="Controllers\ProductLine.Controller.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="Models\DownloadStatus.Model.cs" />
     <Compile Include="Models\Report.Model.cs" />
     <Compile Include="Models\Schema.Model.cs" />
+    <Compile Include="Models\SecurityProfile.Model.cs" />
     <Compile Include="SQL\Repository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="_Logger\Logic\Logger.cs" />

@@ -7,6 +7,7 @@ using System.Web.Http;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
 using Logger.BusinessLogic;
+using MAP_REST.BusinessLogic;
 
 namespace MAP_REST.Controllers
 {
@@ -51,6 +52,18 @@ namespace MAP_REST.Controllers
             result = db.getDataSourceParameters((int)postObject.dataSourceID);
 
             //Log.ServerLog(Log.GenerateServerSessionID(), "data-source-parameters", Log.SerializeObject(result), postObject);
+            return Request.CreateResponse(HttpStatusCode.OK, new { result });
+        }
+
+        [Route("security-profile")]
+        [HttpGet]
+        public HttpResponseMessage profile()
+        {
+            var securityProfile = new SecurityProfile();
+            var result = new Models.SecurityProfile.Profile();
+
+            result = securityProfile.getSecurityProfile("CHUP");
+            
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
 
