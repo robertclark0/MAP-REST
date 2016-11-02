@@ -24,7 +24,7 @@ namespace Logger.DataAccess
         /// </summary>
         public void insertServerLog(string serverSessionID, string clientSessionID, string recordType, string recordValue)
         {
-            this.Database.ExecuteSqlCommand("usp_InsServerLog @p0, @p1, @p2, @p3", serverSessionID, clientSessionID, recordType, recordValue);
+            this.Database.ExecuteSqlCommand("Application.usp_InsServerLog @p0, @p1, @p2, @p3", serverSessionID, clientSessionID, recordType, recordValue);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Logger.DataAccess
         /// </summary>
         public void insertClientLog(string clientSessionID, string clientTime, string user, string recordType, string recordValue)
         {
-            this.Database.ExecuteSqlCommand("usp_InsClientLog @p0, @p1, @p2, @p3, @p4", clientSessionID, clientTime, user, recordType, recordValue);
+            this.Database.ExecuteSqlCommand("Application.usp_InsClientLog @p0, @p1, @p2, @p3, @p4", clientSessionID, clientTime, user, recordType, recordValue);
         }
 
 

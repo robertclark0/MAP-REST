@@ -21,13 +21,6 @@ namespace MAP_REST.Controllers
     public class QueryController : ApiController
     {
 
-        [Route("filter")]
-        [HttpPost]
-        public HttpResponseMessage FilterValues([FromBody] dynamic postObject)
-        {
-            return Request.CreateResponse(HttpStatusCode.OK, "filter");
-        }
-
         [Route("query")]
         [HttpPost]
         public HttpResponseMessage Query([FromBody] dynamic postObject)

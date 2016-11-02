@@ -21,9 +21,6 @@ namespace MAP_REST.BusinessLogic
 
             try
             {
-                //dynamic query = Helpers.Json.Decode(queryObject);
-                //var JSSer = new JavaScriptSerializer();
-                //dynamic query = JSSer.Deserialize<dynamic>(queryObject);
                 dynamic query = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(queryObject);
 
                 var builder = new QueryBuilder.Builder();
@@ -40,8 +37,6 @@ namespace MAP_REST.BusinessLogic
 
                 var loggerDB = new LoggerDataContext();
                 loggerDB.insertServerLog(GUID, null, "download", e.ToString());
-
-                System.Diagnostics.Debug.Write(e);
             }
         }
     }

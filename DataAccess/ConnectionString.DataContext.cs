@@ -26,7 +26,7 @@ namespace MAP_REST.DataAccess
         /// <returns>Returns MAP product lines</returns>
         public Models.Connection getConnectionString(string entityCode, string environmentCode, string userType = "U")
         {
-            return this.Database.SqlQuery<Models.Connection>("usp_GetConnectionString @p0, @p1, @p2", entityCode, environmentCode, userType).FirstOrDefault();
+            return this.Database.SqlQuery<Models.Connection>("Application.usp_GetConnectionString @p0, @p1, @p2", entityCode, environmentCode, userType).FirstOrDefault();
         }
 
     }

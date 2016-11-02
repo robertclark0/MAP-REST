@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using MAP_REST.Models;
 using MAP_REST.DataAccess;
-using PACT.BLL;
+using PACT.BusinessLogic;
 
 
 namespace MAP_REST.BusinessLogic
@@ -26,18 +26,18 @@ namespace MAP_REST.BusinessLogic
         {
             string entityCode = queryObject.source.product;
 
-            var userInfo = UserInfo.GetUserInfo();
+            //var userInfo = UserInfo.GetUserInfo();
 
-            if (userInfo != null)
-            {
-                var result = UserActive.GetUserActive(userInfo);
+            //if (userInfo != null)
+            //{
+            //    var result = UserActive.GetUserActive(userInfo);
 
-                if (result.Exists(x => x.productName == entityCode))
-                {
-                    return true;
-                }
-                return false;
-            }
+            //    if (result.Exists(x => x.productName == entityCode))
+            //    {
+            //        return true;
+            //    }
+            //    return false;
+            //}
             return false;
         }
     }

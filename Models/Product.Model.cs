@@ -5,16 +5,16 @@ using System.Web;
 
 namespace MAP_REST.Models
 {
-    public class ProductLine
+    public class Product
     {
         public string Code { get; set; }
         public string Name { get; set; }
         public int Active { get; set; }
         public string Icon { get; set; }
         public string IconClass { get; set; }
-        public int Restricted { get; set; }
-        public int RestrictionLevel { get; set; }
         public List<ModuleList> Modules { get; set; }
+        public List<DataSource> DataSources { get; set; }
+        public FeatureProfile.Profile FeatureProfile { get; set;}
     }
 
     public class ModuleList
@@ -25,9 +25,8 @@ namespace MAP_REST.Models
 
     public class DataSource
     {
-        public string Code { get; set; }
         public int DataSourceID { get; set; }
-        public string SourceName { get; set; }
+        public string Alias { get; set; }
         public string SourceType { get; set; }
     }
 
@@ -35,12 +34,9 @@ namespace MAP_REST.Models
     {
         public int DataSourceParameterID { get; set; }
         public string ParameterName { get; set; }
-        public string DataType { get; set; }
-        public string ParameterType { get; set; }
-        public string TableReference { get; set; }
-        public string ColumnReference { get; set; }
+        //public string DataType { get; set; }
+        //public string ParameterType { get; set; }
+        //public string TableReference { get; set; }
+        //public string ColumnReference { get; set; }
     }
-
-
-
 }

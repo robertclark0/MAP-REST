@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using PACT.Models;
 
 
-namespace PACT.DAL
+namespace PACT.DataAccess
 {
     public class SecurityDataContext : DbContext
     {
@@ -21,55 +21,25 @@ namespace PACT.DAL
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Get User Info
-        /// </summary>
-        /// <param name="ID">either AKO ID or EDIPI</param>
-        /// <param name="IDType">string ("AKOID" or "EDIPN")</param>
-        /// <returns>Returns user parameters</returns>
-        public UserInfo getUserInfo(string ID, string IDType)
+
+        public User getUser(string ID, string IDType)
         {
-            return this.Database.SqlQuery<UserInfo>("usp_GetUserInfo @p0, @p1", ID, IDType).FirstOrDefault();
+            return this.Database.SqlQuery<User>("usp_GetUserInfo @p0, @p1", ID, IDType).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Get User Info
-        /// </summary>
-        /// <param name="ID">either AKO ID or EDIPI</param>
-        /// <param name="IDType">string ("AKOID" or "EDIPN")</param>
-        /// <returns>Returns user parameters</returns>
-        public List<UserActive> getUserActive(string ID, string IDType)
+        public List<AuthorizedProduct> getProducts(string ID, string IDType)
         {
-            return this.Database.SqlQuery<UserActive>("usp_GetUserActiveProducts @p0, @p1", ID, IDType).ToList();
+            return this.Database.SqlQuery<AuthorizedProduct>("usp_GetUserActiveProducts @p0, @p1", ID, IDType).ToList();
         }
 
-        //=======================================================================================================
-
-        public User GetUserInfo(string akoUserId, string productName)
+        public List<Authorization> GetUserRoles(string akoUserId, string productName)
         {
-            return this.Database.SqlQuery<User>("usp_GetUserInfoForProduct @p0, @p1", akoUserId, productName).FirstOrDefault();
+            return this.Database.SqlQuery<Authorization>("usp_GetRolesUserProduct @p0, @p1", akoUserId, productName).ToList();
         }
-        public User GetUserInfo(string akoUserId, string productName, string ediPn)
+        public List<Authorization> GetUserRoles(string akoUserId, string productName, string ediPn)
         {
-            return this.Database.SqlQuery<User>("usp_GetUserInfoForProduct @p0, @p1, @p2", akoUserId, productName, ediPn).FirstOrDefault();
+            return this.Database.SqlQuery<Authorization>("usp_GetRolesUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
         }
-        public List<Role> GetUserRoles(string akoUserId, string productName)
-        {
-            return this.Database.SqlQuery<Role>("usp_GetRolesUserProduct @p0, @p1", akoUserId, productName).ToList();
-        }
-        public List<Role> GetUserRoles(string akoUserId, string productName, string ediPn)
-        {
-            return this.Database.SqlQuery<Role>("usp_GetRolesUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
-        }
-        public List<Dmis> GetUserDmis(string akoUserId, string productName)
-        {
-            return this.Database.SqlQuery<Dmis>("usp_GetDMISUserProduct @p0, @p1", akoUserId, productName).ToList();
-        }
-        public List<Dmis> GetUserDmis(string akoUserId, string productName, string ediPn)
-        {
-            return this.Database.SqlQuery<Dmis>("usp_GetDMISUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
-        }
-
 
     }
 }

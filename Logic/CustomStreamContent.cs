@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Net.Http;
 using System.IO;
+using Logger;
 
 namespace MAP_REST.BusinessLogic
 {
@@ -24,7 +25,6 @@ namespace MAP_REST.BusinessLogic
 
         protected override void Dispose(bool disposing)
         {
-            //close the file stream
             base.Dispose(disposing);
 
             try
@@ -33,7 +33,7 @@ namespace MAP_REST.BusinessLogic
             }
             catch (Exception ex)
             {
-                //log this exception somewhere so that you know something bad happened
+                Logger.BusinessLogic.Log.ServerLog(null, "stream-error", ex.ToString(), null);
             }
         }
     }
