@@ -20,8 +20,8 @@ namespace PACT.Controllers
         [HttpGet]
         public HttpResponseMessage user()
         {
-            var user = new BusinessLogic.User();
-            var result = user.getUserData();
+            var currentUser = new BusinessLogic.User();
+            var result = currentUser.getUserData();
 
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }

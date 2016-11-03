@@ -5,6 +5,7 @@ using System.Web;
 using MAP_REST.BusinessLogic;
 using PACT.Models;
 using PACT.DataAccess;
+using System.Text.RegularExpressions;
 
 namespace PACT.BusinessLogic
 {
@@ -12,27 +13,29 @@ namespace PACT.BusinessLogic
     {
         public Models.User getUserData()
         {
-            var AKOID = getAKOID();
-            var EDIPN = getEDIPN();
-
-            var user = new Models.User();
             var connection = Credentials.getConnectionString("PACT");
             var db = new SecurityDataContext(connection.ConnectionString);
 
+            var AKOID = getAKOID();
+            var EDIPN = getEDIPN();
+            var user = new Models.User();
+           
             if (EDIPN != null)
                 user = db.getUser(EDIPN, "EDIPN");
             else
                 user = db.getUser(AKOID, "AKOID");
 
-
-            user.AuthorizedProducts = db.getProducts(user.EDIPN, "EDIPN");
-
-            foreach (AuthorizedProduct p in user.AuthorizedProducts)
+            if (user != null)
             {
-                p.Authorizations = db.GetUserRoles(user.akoUserID, p.productName, user.EDIPN);
-            }
+                user.AuthorizedProducts = db.getProducts(user.EDIPN, "EDIPN");
 
-            return user;
+                foreach (AuthorizedProduct p in user.AuthorizedProducts)
+                {
+                    p.Authorizations = db.GetUserRoles(user.akoUserID, p.productName, user.EDIPN);
+                }
+                return user;
+            }
+            return unauthorizedUser(AKOID, EDIPN);
         }
 
         public string getAKOID()
@@ -58,6 +61,19 @@ namespace PACT.BusinessLogic
         public string getEDIPN()
         {
             return ServerVariables.GetServerVariable("HTTP_ARMYEDIPI");
+        }
+
+        public Models.User unauthorizedUser(string AKOID, string EDIPN)
+        {
+            string[] AKOPartials = AKOID.Split('.');
+
+            var user = new Models.User();
+            user.UID = -1;
+            user.EDIPN = EDIPN;
+            user.akoUserID = AKOID;
+            user.fName = AKOPartials[0];
+
+            return user;
         }
     }
 }
