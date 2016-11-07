@@ -12,37 +12,33 @@ namespace MAP_REST.Controllers
 {
     public class SchemaController : ApiController
     {
-        [Route("schema/table")]
+        [Route("schema")]
         [HttpPost]
         public HttpResponseMessage tableSchema([FromBody] dynamic postObject)
         {
-            string entityCode = postObject.post.entityCode;
-            string tableName = postObject.post.tableName;
-
-            var result = new List<Models.Schema>();
+            string alias = postObject.post.alias;
+            string type = postObject.post.type;
+            string column = postObject.post.columnName;
 
             var connection = Credentials.getConnectionString("MASTER", "U");
             var db = new SchemaDataContext(connection.ConnectionString);
-            result = db.getTableSchema(entityCode, tableName);
 
+            var source = db.getDataSource(alias);
+            var result = new Object();
 
-            return Request.CreateResponse(HttpStatusCode.OK, new { result });
-        }
+            switch (type)
+            {
+                case "table":
+                    result = new List<Models.Schema>();
+                    result = db.getTableSchema(source.Catalog, source.SourceName);
+                    break;
 
-        [Route("schema/column")]
-        [HttpPost]
-        public HttpResponseMessage columnDistinct([FromBody] dynamic postObject)
-        {
-            string entityCode = postObject.post.entityCode;
-            string tableName = postObject.post.tableName;
-            string columnName = postObject.post.columnName;
+                case "column":
+                    result = new List<object>();
+                    result = db.getColumnDistinct(source.Catalog, source.SourceName, column);
+                    break;
+            }
             
-            var connection = Credentials.getConnectionString("MASTER", "U");
-            var db = new SchemaDataContext(connection.ConnectionString);
-
-            var result = db.getColumnDistinct(entityCode, tableName, columnName);
-
-
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
 

@@ -129,13 +129,13 @@ namespace MAP_REST.QueryBuilder
             switch (format)
             {
                 case "count":
-                    return String.Format("COUNT([{0}]) AS [{1}]", selection.name, selection.aggregation.allias);
+                    return String.Format("COUNT([{0}]) AS [{1}]", selection.name, selection.aggregation.alias);
                 case "sum":
-                    return String.Format("SUM([{0}]) AS [{1}]", selection.name, selection.aggregation.allias);
+                    return String.Format("SUM([{0}]) AS [{1}]", selection.name, selection.aggregation.alias);
                 case "case-count":
-                    return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", Operators(selection, selection.aggregation.operators), selection.aggregation.allias);
+                    return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", Operators(selection, selection.aggregation.operators), selection.aggregation.alias);
                 case "case-sum":
-                    return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", Operators(selection, selection.aggregation.operators), selection.name, selection.aggregation.round, selection.aggregation.allias);
+                    return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", Operators(selection, selection.aggregation.operators), selection.name, selection.aggregation.round, selection.aggregation.alias);
                 default:
                     return String.Format("[{0}]", selection.name);
             }
@@ -199,7 +199,7 @@ namespace MAP_REST.QueryBuilder
         {
             if (aggregate)
             {
-                return String.Format("[{0}] {1}", selection.aggregation.allias, selection.order);
+                return String.Format("[{0}] {1}", selection.aggregation.alias, selection.order);
             }
             else
             {

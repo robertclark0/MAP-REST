@@ -10,4 +10,10 @@ namespace MAP_REST.Models
         public string COLUMN_NAME { get; set; }
         public string DATA_TYPE { get; set; }
     }
+
+    public class SchemaDataSource
+    {
+        public string SourceName { get; set; }
+        public string Catalog { get; set; }
+    }
 }

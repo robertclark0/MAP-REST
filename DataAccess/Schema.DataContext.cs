@@ -20,11 +20,16 @@ namespace MAP_REST.DataAccess
             throw new NotImplementedException();
         }
 
-        public List<Models.Schema> getTableSchema(string entityCode, string tableName)
+        public Models.SchemaDataSource getDataSource(string alias)
         {
-            string SQL = "SELECT [COLUMN_NAME],[DATA_TYPE] FROM [MAP_{0}].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{1}' ORDER BY 1";
+            return this.Database.SqlQuery<Models.SchemaDataSource>("Product.usp_GetDataSourceByAlias @p0", alias).FirstOrDefault();
+        }
 
-            return this.Database.SqlQuery<Models.Schema>(String.Format(SQL, entityCode, tableName)).ToList();
+        public List<Models.Schema> getTableSchema(string catalog, string tableName)
+        {
+            string SQL = "SELECT [COLUMN_NAME],[DATA_TYPE] FROM [{0}].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{1}' ORDER BY 1";
+
+            return this.Database.SqlQuery<Models.Schema>(String.Format(SQL, catalog, tableName)).ToList();
         }
 
         public dynamic getColumnDistinct(string entityCode, string tableName, string columnName)
@@ -33,7 +38,7 @@ namespace MAP_REST.DataAccess
 
             this.Database.Connection.Open();
             var cmd = this.Database.Connection.CreateCommand();
-            cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [MAP_{1}].dbo.[{2}]", columnName, entityCode, tableName);
+            cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}]", columnName, entityCode, tableName);
 
             var reader = cmd.ExecuteReader();
             while (reader.Read())
