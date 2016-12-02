@@ -66,7 +66,7 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Download(string GUID)
         {
             string path = System.Web.Configuration.WebConfigurationManager.AppSettings["Download"];
-            string filePath = Path.Combine(path, "MAP_D_" + GUID + ".csv");
+            string filePath = Path.Combine(path, GUID + ".csv");
 
             var result = new HttpResponseMessage(HttpStatusCode.OK);
             result.Content = new CustomStreamContent(filePath);

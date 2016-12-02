@@ -18,7 +18,7 @@ namespace MAP_REST.BusinessLogic
 
             //MAYBE get userType programatically here
 
-            var db = new ConnectionStringDataContext();
+            var db = new ConnectionDataContext();
             return db.getConnectionString(entityCode, environmentCode, userType);
         }
 

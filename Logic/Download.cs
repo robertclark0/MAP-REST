@@ -27,7 +27,7 @@ namespace MAP_REST.BusinessLogic
                 var queryString = builder.BuildQueryString(query, true);
                 var CSVQuery = new QueryDataContext(connectionString);
 
-                CSVQuery.QueryCSVWriter(queryString, Path.Combine(filePath, "MAP_D_" + GUID + ".csv"));
+                CSVQuery.QueryCSVWriter(queryString, Path.Combine(filePath, GUID + ".csv"));
 
                 db.updateDownloadStatus(GUID, "complete");
             }

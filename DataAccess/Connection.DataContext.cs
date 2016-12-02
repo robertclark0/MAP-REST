@@ -9,9 +9,9 @@ using MAP_REST.Models;
 
 namespace MAP_REST.DataAccess
 {
-    public class ConnectionStringDataContext : DbContext
+    public class ConnectionDataContext : DbContext
     {
-        public ConnectionStringDataContext(string nameOrConnectionString = "name=MAP")
+        public ConnectionDataContext(string nameOrConnectionString = "name=MAP")
             : base(nameOrConnectionString)
         { }
 
@@ -27,6 +27,11 @@ namespace MAP_REST.DataAccess
         public Models.Connection getConnectionString(string entityCode, string environmentCode, string userType = "U")
         {
             return this.Database.SqlQuery<Models.Connection>("Application.usp_GetConnectionString @p0, @p1, @p2", entityCode, environmentCode, userType).FirstOrDefault();
+        }
+
+        public Models.DataSource getDataSource(string alias)
+        {
+            return this.Database.SqlQuery<Models.DataSource>("Product.usp_GetDataSourceByAlias @p0", alias).FirstOrDefault();
         }
 
     }

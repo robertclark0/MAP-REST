@@ -25,9 +25,9 @@ namespace MAP_REST.DataAccess
             return this.Database.SqlQuery<Models.ModuleList>("Product.usp_GetProductLineModule @p0", EntityCode).ToList();
         }
 
-        public List<Models.DataSource> getDataSource(string EntityCode)
+        public List<Models.SourceAlias> getDataSource(string EntityCode)
         {
-            return this.Database.SqlQuery<Models.DataSource>("Product.usp_GetDataSource @p0", EntityCode).ToList();
+            return this.Database.SqlQuery<Models.SourceAlias>("Product.usp_GetDataSource @p0", EntityCode).ToList();
         }
         public List<Models.DataSourceParameters> getDataSourceParameters(int DataSourceParameterID )
         {

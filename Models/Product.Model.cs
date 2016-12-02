@@ -13,7 +13,7 @@ namespace MAP_REST.Models
         public string Icon { get; set; }
         public string IconClass { get; set; }
         public List<ModuleList> Modules { get; set; }
-        public List<DataSource> DataSources { get; set; }
+        public List<SourceAlias> DataSources { get; set; }
         public FeatureProfile.Profile FeatureProfile { get; set;}
     }
 
@@ -23,7 +23,7 @@ namespace MAP_REST.Models
         public int IsDefault { get; set; }
     }
 
-    public class DataSource
+    public class SourceAlias
     {
         public int DataSourceID { get; set; }
         public string Alias { get; set; }

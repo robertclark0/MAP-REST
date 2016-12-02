@@ -20,9 +20,9 @@ namespace MAP_REST.DataAccess
             throw new NotImplementedException();
         }
 
-        public Models.SchemaDataSource getDataSource(string alias)
+        public Models.DataSource getDataSource(string alias)
         {
-            return this.Database.SqlQuery<Models.SchemaDataSource>("Product.usp_GetDataSourceByAlias @p0", alias).FirstOrDefault();
+            return this.Database.SqlQuery<Models.DataSource>("Product.usp_GetDataSourceByAlias @p0", alias).FirstOrDefault();
         }
 
         public List<Models.Schema> getTableSchema(string catalog, string tableName)

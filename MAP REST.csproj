@@ -155,6 +155,7 @@
     <Compile Include="DataAccess\Report.DataContext.cs" />
     <Compile Include="DataAccess\Schema.DataContext.cs" />
     <Compile Include="DataAccess\FeatureProfile.DataContext.cs" />
+    <Compile Include="Logic\DataSourceConnection.cs" />
     <Compile Include="Logic\Credentials.cs" />
     <Compile Include="Logic\CustomStreamContent.cs" />
     <Compile Include="Logic\Download.cs" />
@@ -167,7 +168,7 @@
     </Compile>
     <Compile Include="Controllers\Query.Controller.cs" />
     <Compile Include="Controllers\Report.Controller.cs" />
-    <Compile Include="DataAccess\ConnectionString.DataContext.cs" />
+    <Compile Include="DataAccess\Connection.DataContext.cs" />
     <Compile Include="DataAccess\Product.DataContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

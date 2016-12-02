@@ -12,4 +12,11 @@ namespace MAP_REST.Models
         public string Environment { get; set; }
         public string ConnectionString { get; set; }
     }
+
+    public class DataSource
+    {
+        public string SourceName { get; set; }
+        public string Catalog { get; set; }
+        public string Name { get; set; }
+    }
 }

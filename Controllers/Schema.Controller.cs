@@ -20,7 +20,7 @@ namespace MAP_REST.Controllers
             string type = postObject.post.type;
             string column = postObject.post.columnName;
 
-            var connection = Credentials.getConnectionString("MASTER", "U");
+            var connection = Credentials.getConnectionString("MASTER");
             var db = new SchemaDataContext(connection.ConnectionString);
 
             var source = db.getDataSource(alias);
@@ -40,6 +40,15 @@ namespace MAP_REST.Controllers
             }
             
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
+        }
+
+        [Route("source-test")]
+        [HttpGet]
+        public HttpResponseMessage test()
+        {
+
+
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
     }
