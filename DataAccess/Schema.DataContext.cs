@@ -32,13 +32,27 @@ namespace MAP_REST.DataAccess
             return this.Database.SqlQuery<Models.Schema>(String.Format(SQL, catalog, tableName)).ToList();
         }
 
-        public dynamic getColumnDistinct(string entityCode, string tableName, string columnName)
+        public dynamic getColumnDistinct(string entityCode, string tableName, string columnName, string order = null)
         {
             var items = new List<object>();
 
             this.Database.Connection.Open();
             var cmd = this.Database.Connection.CreateCommand();
-            cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}]", columnName, entityCode, tableName);
+
+            switch (order)
+            {
+                case "asc":
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 ASC", columnName, entityCode, tableName);
+                    break;
+
+                case "desc":
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 DESC", columnName, entityCode, tableName);
+                    break;
+
+                default:
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}]", columnName, entityCode, tableName);
+                    break;
+            }
 
             var reader = cmd.ExecuteReader();
             while (reader.Read())
