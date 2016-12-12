@@ -12,8 +12,7 @@ namespace MAP_REST.QueryBuilder
             bool aggregateFlag = queryObject.aggregation.enabled;
             bool paginationFlag = queryObject.pagination.enabled;
 
-            string[] selections = BuildSelections(queryObject);
-            string filters = BuildFilters(queryObject);
+            QueryComponents components = BuildQueryComponents(queryObject);
 
             string query = String.Empty;
             var SQLTemplate = new QueryBuilder.SQLTemplate();
@@ -22,175 +21,146 @@ namespace MAP_REST.QueryBuilder
             {
                 query = String.Format(SQLTemplate.Unlimited
                     , queryObject.source.name
-                    , filters
-                    , selections[2]);
+                    , components.filters
+                    , components.ordering);
             }
             else if (aggregateFlag && paginationFlag)
             {
                 query = String.Format(SQLTemplate.PaginatedGrouping
-                    , selections[0]
+                    , components.selections
                     , queryObject.source.name
-                    , filters
-                    , selections[1]
-                    , selections[2]
+                    , components.filters
+                    , components.grouping
+                    , components.ordering
                     , queryObject.pagination.page
                     , queryObject.pagination.range);
             }
             else if (aggregateFlag)
             {
                 query = String.Format(SQLTemplate.Grouping
-                    , selections[0]
+                    , components.selections
                     , queryObject.source.name
-                    , filters
-                    , selections[1]
-                    , selections[2]);
+                    , components.filters
+                    , components.grouping
+                    , components.ordering);
             }
             else if (paginationFlag)
             {
                 query = String.Format(SQLTemplate.Pagination
-                    , selections[0]
+                    , components.selections
                     , queryObject.source.name
-                    , filters
-                    , selections[2]
+                    , components.filters
+                    , components.ordering
                     , queryObject.pagination.page
                     , queryObject.pagination.range);
             }
             else
             {
                 query = String.Format(SQLTemplate.Default
-                    , selections[0]
+                    , components.selections
                     , queryObject.source.name
-                    , filters
-                    , selections[2]);
+                    , components.filters
+                    , components.ordering);
             }
             return query;
         }
 
         //SELECTIONS
-        private string[] BuildSelections(dynamic queryOjbect)
+        private QueryComponents BuildQueryComponents(dynamic queryObject)
         {
-            var querySelections = new List<string>();
-            var queryGrouping = new List<string>();
-            var queryOrdering = new List<string>();
+            var components = new QueryComponents();
 
-            bool aggregateFlag = queryOjbect.aggregation.enabled;
-            bool paginationFlag = queryOjbect.pagination.enabled;
+            components.selections = BuildSelections(queryObject);
+            components.filters = BuildFilters(queryObject);
+            components.grouping = BuildGrouping(queryObject);
+            components.ordering = BuildOrder(queryObject);
 
-            foreach (dynamic selection in queryOjbect.selections)
-            {
-                if (aggregateFlag)
-                {
-                    if ((bool)selection.aggregate)
-                    {
-                        switch ((string)selection.aggregation.type)
-                        {
-                            case "count":
-                                querySelections.Add(Select(selection, "count"));
-                                queryOrdering.Add(Order(selection, true));
-                                break;
-                            case "sum":
-                                querySelections.Add(Select(selection, "sum"));
-                                queryOrdering.Add(Order(selection, true));
-                                break;
-                            case "case-count":
-                                querySelections.Add(Select(selection, "case-count"));
-                                queryOrdering.Add(Order(selection, true));
-                                break;
-                            case "case-sum":
-                                querySelections.Add(Select(selection, "case-sum"));
-                                queryOrdering.Add(Order(selection, true));
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        querySelections.Add(Select(selection));
-                        queryOrdering.Add(Order(selection));
-                        queryGrouping.Add(Select(selection));
-                    }
-                }
-                else
-                {
-                    if (!(bool)(selection.aggregate))
-                    {
-                        querySelections.Add(Select(selection));
-                        queryOrdering.Add(Order(selection));
-                    }
-                }
-            }
-
-            var selections = String.Join(", ", querySelections);
-            var grouping = String.Join(", ", queryGrouping);
-            var ordering = String.Join(", ", queryOrdering);
-            return new string[] { selections, grouping, ordering };
+            return components;
         }
-        private string Select(dynamic selection, string format = null)
+        private string Select(dynamic selection)
         {
-            switch (format)
+            switch ((string)selection.aggregateFunctionValue)
             {
                 case "count":
-                    return String.Format("COUNT([{0}]) AS [{1}]", selection.name, selection.aggregation.alias);
+                    return String.Format("COUNT([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
                 case "sum":
-                    return String.Format("SUM([{0}]) AS [{1}]", selection.name, selection.aggregation.alias);
-                case "case-count":
-                    return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", Operators(selection, selection.aggregation.operators), selection.aggregation.alias);
-                case "case-sum":
-                    return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", Operators(selection, selection.aggregation.operators), selection.name, selection.aggregation.round, selection.aggregation.alias);
+                    return String.Format("SUM([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
+                case "avg":
+                    return String.Format("AVG([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
+                case "min":
+                    return String.Format("MIN([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
+                case "max":
+                    return String.Format("MAX([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
                 default:
-                    return String.Format("[{0}]", selection.name);
+                    return String.Format("[{0}] AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
             }
-            
+
         }
+        private string SelectPivot(dynamic selection)
+        {
+            switch ((string)selection.aggregateFunctionValue)
+            {
+                case "count":
+                    return String.Format("SUM(CASE WHEN {0} THEN 1 ELSE 0 END) AS [{1}]", Operators(selection, selection.pivotValues), selection.alias);
+                case "sum":
+                    return String.Format("ROUND(SUM(CASE WHEN {0} THEN [{1}] ELSE 0 END),{2}) AS [{3}]", Operators(selection, selection.pivotValues), selection.dataValue.COLUMN_NAME, 2, selection.alias);
+                case "avg":
+                    return String.Format("ROUND(AVG(CASE WHEN {0} THEN [{1}] ELSE NULL END),{2}) AS [{3}]", Operators(selection, selection.pivotValues), selection.dataValue.COLUMN_NAME, 2, selection.alias);
+                case "min":
+                    return String.Format("MIN(CASE WHEN {0} THEN [{1}] ELSE NULL END) AS [{2}]", Operators(selection, selection.pivotValues), selection.dataValue.COLUMN_NAME, selection.alias);
+                case "max":
+                    return String.Format("MAX(CASE WHEN {0} THEN [{1}] ELSE 0 END) AS [{2}]", Operators(selection, selection.pivotValues), selection.dataValue.COLUMN_NAME, selection.alias);
+                default:
+                    return String.Empty;
+            }
+        }
+
         private string Operators(dynamic operationObject, dynamic operations)
         {
             var operators = new List<string>();
             foreach (dynamic operation in operations)
             {
-                switch ((string)operation.type)
+                switch ((string)operation.operation)
                 {
                     case "greater":
-                        operators.Add(String.Format("[{0}] > {1}", operationObject.name, OperatorValueType(operation, 0)));
+                        operators.Add(String.Format("[{0}] > {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
                         break;
                     case "less":
-                        operators.Add(String.Format("[{0}] < {1}", operationObject.name, OperatorValueType(operation, 0)));
+                        operators.Add(String.Format("[{0}] < {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
                         break;
-                    case "greaterEqual":
-                        operators.Add(String.Format("[{0}] >= {1}", operationObject.name, OperatorValueType(operation, 0)));
+                    case "greaterE":
+                        operators.Add(String.Format("[{0}] >= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
                         break;
-                    case "lessEqual":
-                        operators.Add(String.Format("[{0}] <= {1}", operationObject.name, OperatorValueType(operation, 0)));
+                    case "lessE":
+                        operators.Add(String.Format("[{0}] <= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
                         break;
                     case "equal":
-                        operators.Add(String.Format("[{0}] = {1}", operationObject.name, OperatorValueType(operation, 0)));
+                        operators.Add(String.Format("[{0}] = {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
                         break;
                     case "in":
-                        operators.Add(String.Format("[{0}] IN ({1})", operationObject.name, OperatorValueJoin(operation)));
-                        break;
-                    case "between":
-                        operators.Add(String.Format("[{0}] BETWEEN {1} AND {2}", operationObject.name, OperatorValueType(operation, 0), OperatorValueType(operation, 1)));
+                        operators.Add(String.Format("[{0}] IN ({1})", operationObject.dataValue.COLUMN_NAME, OperatorValueJoin(operation.selectedValues, (string)operationObject.dataValue.DATA_TYPE)));
                         break;
                 }
             }
             return String.Join(" AND ", operators);
         }
-        private string OperatorValueType(dynamic operation, int valueIndex)
+        private string OperatorValueType(dynamic operation, string type)
         {
-            switch ((string)operation.valueType)
+            switch (type)
             {
-                case "string":
-                    return String.Format("'{0}'", operation.values[valueIndex]);
+                case "varchar":
+                    return String.Format("'{0}'", operation);
                 default:
-                    return String.Format("{0}", operation.values[valueIndex]);
+                    return String.Format("{0}", operation);
             }
         }
-        private string OperatorValueJoin(dynamic operation)
+        private string OperatorValueJoin(dynamic operationValues, string type)
         {
             var values = new List<string>();
-            dynamic operationValues = operation.values;
 
-            for (int i = 0; i < operationValues.Count; i++)
+            foreach (dynamic operation in operationValues)
             {
-                values.Add(OperatorValueType(operation, i));
+                values.Add(OperatorValueType(operation, type));
             }
 
             return String.Join(", ", values);
@@ -207,6 +177,41 @@ namespace MAP_REST.QueryBuilder
             }
         }
 
+
+        //SELECTION
+        private string BuildSelections(dynamic queryObject)
+        {
+            var querySelections = new List<string>();
+
+            foreach (dynamic selection in queryObject.selections)
+            {
+                if ((bool)selection.pivot)
+                {
+                    querySelections.Add(SelectPivot(selection));
+                }
+                else
+                {
+                    querySelections.Add(Select(selection));
+                }
+            }
+            return String.Join(", ", querySelections);
+        }
+
+        //GROUPING
+        private string BuildGrouping(dynamic queryObject)
+        {
+            var queryGrouping = new List<string>();
+
+            foreach (dynamic selection in queryObject.selections)
+            {
+                if (!(bool)selection.pivot && !(bool)selection.aggregateFunction)
+                {
+                    queryGrouping.Add((string)selection.dataValue.COLUMN_NAME);
+                }
+            }
+            return String.Join(", ", queryGrouping);
+        }
+
         //FILTERS
         private string BuildFilters(dynamic queryObject)
         {
@@ -214,14 +219,35 @@ namespace MAP_REST.QueryBuilder
 
             foreach (dynamic filter in queryObject.filters)
             {
-                queryFilters.Add(Operators(filter, filter.operators));
+                queryFilters.Add(Operators(filter, filter.operations));
             }
 
             if (queryFilters.Count > 0)
             {
                 return "WHERE " + String.Join(" AND ", queryFilters); ;
             }
-            return String.Empty;           
+            return String.Empty;
+        }
+
+        //ORDER
+        private string BuildOrder(dynamic queryObject)
+        {
+            var orders = new List<string>();
+
+            foreach (dynamic selection in queryObject.selections)
+            {
+                if ((bool)selection.order)
+                {
+                    orders.Add(String.Format("{0} {1}", selection.dataValue.COLUMN_NAME, selection.orderValue));
+                }
+            }
+
+            if (orders.Count > 0)
+            {
+                return "ORDER BY " + String.Join(", ", orders); ;
+            }
+
+            return String.Empty;
         }
     }
 }

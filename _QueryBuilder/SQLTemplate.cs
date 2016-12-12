@@ -13,8 +13,7 @@ namespace MAP_REST.QueryBuilder
             "FROM                                                               " +
             "   {0}                                                             " +
             "{1}                                                                " +
-            "ORDER BY                                                           " +
-            "   {2}                                                             ";
+            "{2}                                                                ";
 
         private string _default =
             "SELECT TOP 1000                                                    " +
@@ -22,8 +21,7 @@ namespace MAP_REST.QueryBuilder
             "FROM                                                               " +
             "   {1}                                                             " +
             "{2}                                                                " +
-            "ORDER BY                                                           " +
-            "   {3}                                                             " ;
+            "{3}                                                                " ;
 
         private string _grouping =
             "SELECT                                                             " +
@@ -33,8 +31,7 @@ namespace MAP_REST.QueryBuilder
             "{2}                                                                " +
             "GROUP BY                                                           " +
             "   {3}                                                             " +
-            "ORDER BY                                                           " +
-            "   {4}                                                             " ;
+            "{4}                                                                " ;
         
         string _pagination =
             "SELECT                                                             " +
@@ -61,7 +58,7 @@ namespace MAP_REST.QueryBuilder
             "FROM                                                               " +
             "(                                                                  " +
 	        "   SELECT                                                          " +
-		    "       ROW_NUMBER() OVER ( ORDER BY {4} ) AS RowNum                " +
+		    "       ROW_NUMBER() OVER ( {4} ) AS RowNum                         " +
             "       ,*                                                          " +
 	        "   FROM                                                            " +
 	        "   (                                                               " +
