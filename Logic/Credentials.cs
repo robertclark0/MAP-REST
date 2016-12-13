@@ -16,28 +16,22 @@ namespace MAP_REST.BusinessLogic
             string serverName = ServerVariables.GetServerVariable("SERVER_NAME");
             string environmentCode = ServerEnvironment.serverNametoEnvCode(serverName);
 
-            //MAYBE get userType programatically here
-
             var db = new ConnectionDataContext();
             return db.getConnectionString(entityCode, environmentCode, userType);
         }
 
-        public static bool getQueryAuth(dynamic queryObject)
+        public static bool isUserAuthorized(string product)
         {
-            string entityCode = queryObject.source.product;
+            var userLogic = new PACT.BusinessLogic.User();
+            PACT.Models.User user = userLogic.getUserData();
 
-            //var userInfo = UserInfo.GetUserInfo();
-
-            //if (userInfo != null)
-            //{
-            //    var result = UserActive.GetUserActive(userInfo);
-
-            //    if (result.Exists(x => x.productName == entityCode))
-            //    {
-            //        return true;
-            //    }
-            //    return false;
-            //}
+            if (user != null)
+            {
+                if (user.AuthorizedProducts.Exists(x => x.productName == product))
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }

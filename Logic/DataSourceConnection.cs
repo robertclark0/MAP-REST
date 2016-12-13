@@ -10,33 +10,34 @@ namespace MAP_REST.BusinessLogic
 {
     public class DataSourceConnection
     {
-        public void getDataSourceConnection(string alias)
+        public string authorizedConnectionString(Models.FeatureProfile.Profile featureProfile, Models.DataSource dataSource)
         {
-            bool authorizedUser = false;
-
-            var userData = new PACT.BusinessLogic.User();
-            var user = userData.getUserData();
-
-            var db = new ConnectionDataContext();
-            var souce = db.getDataSource(alias);
-
-            foreach (AuthorizedProduct auth in user.AuthorizedProducts)
+            if (featureProfile.DataQuery == "res" || featureProfile.DataQuery == "par")
             {
-                if (auth.productName == souce.Name)
+                if (Credentials.isUserAuthorized(dataSource.Code))
                 {
-                    authorizedUser = true;
+                    return Credentials.getConnectionString(dataSource.Code).ConnectionString;
+                }
+                else
+                {
+                    if (featureProfile.DataQuery == "par")
+                    {
+                        return Credentials.getConnectionString(dataSource.Code, "R").ConnectionString;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
-
-            if (authorizedUser)
+            else if (featureProfile.DataQuery == "unr")
             {
-                var connection = Credentials.getConnectionString(souce.Name);
+                return Credentials.getConnectionString(dataSource.Code).ConnectionString;
             }
             else
             {
-                var connection = Credentials.getConnectionString(souce.Name, "R");
+                return null;
             }
-
         }
     }
 }

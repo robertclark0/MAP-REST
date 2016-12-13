@@ -18,5 +18,6 @@ namespace MAP_REST.Models
         public string SourceName { get; set; }
         public string Catalog { get; set; }
         public string Name { get; set; }
+        public string Code { get; set; }
     }
 }

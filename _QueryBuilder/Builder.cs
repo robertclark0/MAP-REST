@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using MAP_REST.DataAccess;
+using MAP_REST.Models;
 
 namespace MAP_REST.QueryBuilder
 {
@@ -20,7 +22,7 @@ namespace MAP_REST.QueryBuilder
             if (download)
             {
                 query = String.Format(SQLTemplate.Unlimited
-                    , queryObject.source.name
+                    , components.source
                     , components.filters
                     , components.ordering);
             }
@@ -28,7 +30,7 @@ namespace MAP_REST.QueryBuilder
             {
                 query = String.Format(SQLTemplate.PaginatedGrouping
                     , components.selections
-                    , queryObject.source.name
+                    , components.source
                     , components.filters
                     , components.grouping
                     , components.ordering
@@ -39,7 +41,7 @@ namespace MAP_REST.QueryBuilder
             {
                 query = String.Format(SQLTemplate.Grouping
                     , components.selections
-                    , queryObject.source.name
+                    , components.source
                     , components.filters
                     , components.grouping
                     , components.ordering);
@@ -48,7 +50,7 @@ namespace MAP_REST.QueryBuilder
             {
                 query = String.Format(SQLTemplate.Pagination
                     , components.selections
-                    , queryObject.source.name
+                    , components.source
                     , components.filters
                     , components.ordering
                     , queryObject.pagination.page
@@ -58,7 +60,7 @@ namespace MAP_REST.QueryBuilder
             {
                 query = String.Format(SQLTemplate.Default
                     , components.selections
-                    , queryObject.source.name
+                    , components.source
                     , components.filters
                     , components.ordering);
             }
@@ -74,6 +76,7 @@ namespace MAP_REST.QueryBuilder
             components.filters = BuildFilters(queryObject);
             components.grouping = BuildGrouping(queryObject);
             components.ordering = BuildOrder(queryObject);
+            components.source = BuildDataSource(queryObject);
 
             return components;
         }
@@ -217,6 +220,8 @@ namespace MAP_REST.QueryBuilder
         {
             var queryFilters = new List<string>();
 
+            //USER LEVEL SECURITY, GET PACT RESTRICTIONS AND ADD THEM TO FILTERS.
+
             foreach (dynamic filter in queryObject.filters)
             {
                 queryFilters.Add(Operators(filter, filter.operations));
@@ -248,6 +253,15 @@ namespace MAP_REST.QueryBuilder
             }
 
             return String.Empty;
+        }
+
+        //DATA SOURCE
+        private string BuildDataSource(dynamic queryObject)
+        {
+            var db = new ConnectionDataContext();
+            DataSource dataSource = db.getDataSource((string)queryObject.source.alias);
+
+            return String.Format("[{0}].[dbo].[{1}]", dataSource.Catalog, dataSource.SourceName);
         }
     }
 }

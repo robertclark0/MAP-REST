@@ -10,6 +10,9 @@ using MAP_REST.DataAccess;
 using MAP_REST.Models;
 using MAP_REST.QueryBuilder;
 using MAP_REST.BusinessLogic;
+using PACT.BusinessLogic;
+using PACT.Models;
+using PACT.DataAccess;
 using System.IO;
 using Hangfire;
 using System.Web.Script.Serialization;
@@ -25,17 +28,22 @@ namespace MAP_REST.Controllers
         [HttpPost]
         public HttpResponseMessage Query([FromBody] dynamic postObject)
         {
+            var connectionDB = new ConnectionDataContext();
+            DataSource dataSource = connectionDB.getDataSource((string)postObject.query.source.alias);
+
+            var featureProfileDB = new FeatureProfileDataContext();
+            Models.FeatureProfile.Profile profile = featureProfileDB.getProfileDefinition(dataSource.Code);
+
             var builder = new QueryBuilder.Builder();
             string queryString = builder.BuildQueryString(postObject.query);
 
-            //get query connection
-            if (Credentials.getQueryAuth(postObject.query))
-            {
-                var connection = Credentials.getConnectionString("CHUP", "U");
-                var db = new QueryDataContext(connection.ConnectionString);
+            var connection = new DataSourceConnection();
+            string connectionString = connection.authorizedConnectionString(profile, dataSource);
 
-                System.Diagnostics.Debug.Write(queryString);
-                var result = db.QueryData(queryString);
+            if (connectionString != null)
+            {
+                var queryDB = new QueryDataContext(connectionString);
+                var result = queryDB.QueryData(queryString);
 
                 return Request.CreateResponse(HttpStatusCode.OK, new { result });
             }
