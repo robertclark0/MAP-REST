@@ -87,9 +87,9 @@ namespace MAP_REST.QueryBuilder
                 case "count":
                     return String.Format("COUNT([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
                 case "sum":
-                    return String.Format("SUM([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
+                    return String.Format("ROUND(SUM([{0}]), {2}) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias, 2);
                 case "avg":
-                    return String.Format("AVG([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
+                    return String.Format("ROUND(AVG([{0}]), {2}) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias, 2);
                 case "min":
                     return String.Format("MIN([{0}]) AS [{1}]", selection.dataValue.COLUMN_NAME, selection.alias);
                 case "max":
