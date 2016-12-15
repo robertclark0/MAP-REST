@@ -64,6 +64,8 @@ namespace MAP_REST.QueryBuilder
                     , components.filters
                     , components.ordering);
             }
+
+            System.Diagnostics.Debug.WriteLine(query);
             return query;
         }
 
@@ -243,7 +245,7 @@ namespace MAP_REST.QueryBuilder
             {
                 if ((bool)selection.order)
                 {
-                    orders.Add(String.Format("{0} {1}", selection.dataValue.COLUMN_NAME, selection.orderValue));
+                    orders.Add(String.Format("[{0}] {1}", selection.alias, selection.orderValue));
                 }
             }
 
