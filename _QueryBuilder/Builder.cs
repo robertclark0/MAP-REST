@@ -125,26 +125,29 @@ namespace MAP_REST.QueryBuilder
             var operators = new List<string>();
             foreach (dynamic operation in operations)
             {
-                switch ((string)operation.operation)
+                if (operation.selectedValues.Count > 0)
                 {
-                    case "greater":
-                        operators.Add(String.Format("[{0}] > {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
-                        break;
-                    case "less":
-                        operators.Add(String.Format("[{0}] < {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
-                        break;
-                    case "greaterE":
-                        operators.Add(String.Format("[{0}] >= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
-                        break;
-                    case "lessE":
-                        operators.Add(String.Format("[{0}] <= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
-                        break;
-                    case "equal":
-                        operators.Add(String.Format("[{0}] = {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
-                        break;
-                    case "in":
-                        operators.Add(String.Format("[{0}] IN ({1})", operationObject.dataValue.COLUMN_NAME, OperatorValueJoin(operation.selectedValues, (string)operationObject.dataValue.DATA_TYPE)));
-                        break;
+                    switch ((string)operation.operation)
+                    {
+                        case "greater":
+                            operators.Add(String.Format("[{0}] > {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            break;
+                        case "less":
+                            operators.Add(String.Format("[{0}] < {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            break;
+                        case "greaterE":
+                            operators.Add(String.Format("[{0}] >= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            break;
+                        case "lessE":
+                            operators.Add(String.Format("[{0}] <= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            break;
+                        case "equal":
+                            operators.Add(String.Format("[{0}] = {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            break;
+                        case "in":
+                            operators.Add(String.Format("[{0}] IN ({1})", operationObject.dataValue.COLUMN_NAME, OperatorValueJoin(operation.selectedValues, (string)operationObject.dataValue.DATA_TYPE)));
+                            break;
+                    }
                 }
             }
             return String.Join(" AND ", operators);
@@ -226,7 +229,16 @@ namespace MAP_REST.QueryBuilder
 
             foreach (dynamic filter in queryObject.filters)
             {
-                queryFilters.Add(Operators(filter, filter.operations));
+                if (filter.operations.Count > 0)
+                {
+                    string currentOpperator = Operators(filter, filter.operations);
+
+                    if (currentOpperator != string.Empty)
+                    {
+                        queryFilters.Add(currentOpperator);
+                    }
+
+                }
             }
 
             if (queryFilters.Count > 0)
