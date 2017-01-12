@@ -14,7 +14,6 @@ namespace MAP_REST.Controllers
     {
         [Route("report")]
         [HttpPost]
-        [HttpGet]
         public HttpResponseMessage Reports([FromBody] dynamic postObject)
         {
             var result = new Object();
@@ -25,7 +24,7 @@ namespace MAP_REST.Controllers
             {
                 switch ((string)postObject.post.type)
                 {
-                    case "report":                        
+                    case "get":                        
                         result = new List<Models.Report>();
                         result = db.getReport((string)postObject.post.report.GUID);
 

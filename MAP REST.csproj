@@ -149,6 +149,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\Canvas.Controller.cs" />
     <Compile Include="Controllers\Schema.Controller.cs" />
     <Compile Include="DataAccess\Download.DataContext.cs" />
     <Compile Include="DataAccess\Query.DataContext.cs" />
