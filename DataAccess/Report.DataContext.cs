@@ -26,14 +26,14 @@ namespace MAP_REST.DataAccess
             return this.Database.SqlQuery<Models.Report>("UserCreated.usp_GetReport @p0", GUID).ToList();
         }
 
-        public void createReport(string EntityCode, string GUID, string User, string Report_Name, string Report_Type, string JSON)
+        public void createReport(string EntityCode, string GUID, string User, string Report_Name, string Report_Type, string JSON, string Category, string Position)
         {
-            this.Database.ExecuteSqlCommand("UserCreated.usp_CreateReport @p0 @p1 @p2 @p3 @p4 @p5", EntityCode, GUID, User, Report_Name, Report_Type, JSON);
+            this.Database.ExecuteSqlCommand("UserCreated.usp_CreateReport @p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7", EntityCode, GUID, User, Report_Name, Report_Type, JSON, Category, Position);
         }
 
-        public void updateReport(string GUID, string User, string Report_Name, string Report_Type, string JSON)
+        public void updateReport(string GUID, string User, string Report_Name, string Report_Type, string JSON, string Category, string Position)
         {
-            this.Database.ExecuteSqlCommand("UserCreated.usp_UpdateReport @p0 @p1 @p2 @p3 @p4", GUID, User, Report_Name, Report_Type, JSON);
+            this.Database.ExecuteSqlCommand("UserCreated.usp_UpdateReport @p0, @p1, @p2, @p3, @p4, @p5, @p6", GUID, User, Report_Name, Report_Type, JSON, Category, Position);
         }
 
         public void deleteReport(string GUID)

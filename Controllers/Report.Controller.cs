@@ -12,64 +12,61 @@ namespace MAP_REST.Controllers
 {
     public class ReportController : ApiController
     {
-
         [Route("report")]
         [HttpPost]
-        public HttpResponseMessage Report([FromBody] dynamic postObject)
+        [HttpGet]
+        public HttpResponseMessage Reports([FromBody] dynamic postObject)
         {
+            var result = new Object();
             var db = new ReportDataContext();
-            var result = new List<Models.Report>();
-            result = db.getReport(postObject.post.report.GUID);
+            var sessionID = Log.GenerateServerSessionID();
 
-            Log.ServerLog(Log.GenerateServerSessionID(), "report", Log.SerializeObject(result), postObject);
-            return Request.CreateResponse(HttpStatusCode.OK, new { result });
-        }
+            if (postObject != null)
+            {
+                switch ((string)postObject.post.type)
+                {
+                    case "report":                        
+                        result = new List<Models.Report>();
+                        result = db.getReport((string)postObject.post.report.GUID);
 
-        [Route("report/update")]
-        [HttpPost]
-        public HttpResponseMessage Update([FromBody] dynamic postObject)
-        {
-            var db = new ReportDataContext();
-            db.updateReport(postObject.post.report.GUID, postObject.post.report.user, postObject.post.report.name, postObject.post.report.type, postObject.post.report.json);
-            var result = "updated";
+                        Log.ServerLog(sessionID, "report:get", Log.SerializeObject(result), postObject);
+                        
+                        break;
 
-            Log.ServerLog(Log.GenerateServerSessionID(), "report/update", Log.SerializeObject(postObject.report.GUID), postObject);
-            return Request.CreateResponse(HttpStatusCode.OK, new { result });
-        }
+                    case "list":
+                        result = new List<Models.ReportList>();
+                        result = db.getReportList((string)postObject.post.entityCode);
 
-        [Route("report/create")]
-        [HttpPost]
-        public HttpResponseMessage Create([FromBody] dynamic postObject)
-        {
-            var db = new ReportDataContext();
-            db.createReport(postObject.post.entityCode, postObject.post.report.GUID, postObject.post.report.user, postObject.post.report.name, postObject.post.report.type, postObject.post.report.json);
-            var result = "created";
+                        Log.ServerLog(sessionID, "report:list", Log.SerializeObject(result), postObject);
 
-            Log.ServerLog(Log.GenerateServerSessionID(), "report/create", Log.SerializeObject(postObject.report.GUID), postObject);
-            return Request.CreateResponse(HttpStatusCode.OK, new { result });
-        }
+                        break;
 
-        [Route("report/delete")]
-        [HttpPost]
-        public HttpResponseMessage Delete([FromBody] dynamic postObject)
-        {
-            var db = new ReportDataContext();
-            db.deleteReport(postObject.post.report.GUID);
-            var result = "deleted";
+                    case "create":
+                        db.createReport((string)postObject.post.entityCode, (string)postObject.post.report.GUID, (string)postObject.post.report.user, (string)postObject.post.report.name, (string)postObject.post.report.type, (string)postObject.post.report.json, (string)postObject.post.report.category, (string)postObject.post.report.position);
+                        result = "created";
 
-            Log.ServerLog(Log.GenerateServerSessionID(), "report/delete", Log.SerializeObject(postObject.report.GUID), postObject);
-            return Request.CreateResponse(HttpStatusCode.OK, new { result });
-        }
+                        Log.ServerLog(sessionID, "report:create", (string)postObject.post.report.json, postObject);
 
-        [Route("report/list")]
-        [HttpPost]
-        public HttpResponseMessage List([FromBody] dynamic postObject)
-        {
-            var db = new ReportDataContext();
-            var result = new List<Models.ReportList>();
-            result = db.getReportList((string)postObject.post.entityCode);
+                        break;
 
-            Log.ServerLog(Log.GenerateServerSessionID(), "report/list", Log.SerializeObject(result), postObject);
+                    case "update":
+                        db.updateReport((string)postObject.post.report.GUID, (string)postObject.post.report.user, (string)postObject.post.report.name, (string)postObject.post.report.type, (string)postObject.post.report.json, (string)postObject.post.report.category, (string)postObject.post.report.position);
+                        result = "updated";
+
+                        Log.ServerLog(sessionID, "report:update", (string)postObject.post.report.json, postObject);
+
+                        break;
+
+                    case "delete":
+                        db.deleteReport((string)postObject.post.report.GUID);
+                        result = "deleted";
+
+                        Log.ServerLog(sessionID, "report:delete", (string)postObject.post.report.GUID, postObject);
+
+                        break;
+                }
+            }
+
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
 
