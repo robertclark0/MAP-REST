@@ -7,6 +7,7 @@ using System.Web.Http;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
 using Logger.BusinessLogic;
+using PACT.BusinessLogic;
 
 namespace MAP_REST.Controllers
 {
@@ -17,11 +18,16 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Reports([FromBody] dynamic postObject)
         {
             var result = new Object();
-            var db = new CanvasDataContext();
-            var sessionID = Log.GenerateServerSessionID();
 
             if (postObject != null)
             {
+               
+                var db = new CanvasDataContext();
+                var sessionID = Log.GenerateServerSessionID();
+
+                var userData = new PACT.BusinessLogic.User();
+                var user = userData.getUserData();
+
                 switch ((string)postObject.post.type)
                 {
                     case "get":
@@ -34,14 +40,14 @@ namespace MAP_REST.Controllers
 
                     case "list":
                         result = new List<Models.ReportList>();
-                        result = db.getCanvasList((string)postObject.post.entityCode);
+                        result = db.getCanvasList(user.akoUserID);
 
                         Log.ServerLog(sessionID, "canvas:list", Log.SerializeObject(result), postObject);
 
                         break;
 
                     case "create":
-                        db.createCanvas((string)postObject.post.entityCode, (string)postObject.post.canvas.GUID, (string)postObject.post.canvas.user, (string)postObject.post.canvas.name, (string)postObject.post.canvas.json);
+                        db.createCanvas((string)postObject.post.entityCode, (string)postObject.post.canvas.GUID, user.akoUserID, (string)postObject.post.canvas.name, (string)postObject.post.canvas.json);
                         result = "created";
 
                         Log.ServerLog(sessionID, "canvas:create", (string)postObject.post.canvas.json, postObject);
@@ -49,7 +55,7 @@ namespace MAP_REST.Controllers
                         break;
 
                     case "update":
-                        db.updateCanvas((string)postObject.post.canvas.GUID, (string)postObject.post.canvas.user, (string)postObject.post.canvas.name, (string)postObject.post.canvas.json);
+                        db.updateCanvas((string)postObject.post.canvas.GUID, user.akoUserID, (string)postObject.post.canvas.name, (string)postObject.post.canvas.json);
                         result = "updated";
 
                         Log.ServerLog(sessionID, "canvas:update", (string)postObject.post.canvas.json, postObject);

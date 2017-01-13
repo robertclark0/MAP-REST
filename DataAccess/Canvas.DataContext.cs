@@ -33,7 +33,7 @@ namespace MAP_REST.DataAccess
 
         public void updateCanvas(string GUID, string User, string Canvas_Name, string JSON)
         {
-            this.Database.ExecuteSqlCommand("UserCreated.usp_UpdateCanvas @p0, @p1, @p2, @p3", GUID, User, Canvas_Name);
+            this.Database.ExecuteSqlCommand("UserCreated.usp_UpdateCanvas @p0, @p1, @p2, @p3", GUID, User, Canvas_Name, JSON);
         }
 
         public void deleteCanvas(string GUID)

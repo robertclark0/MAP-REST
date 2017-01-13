@@ -7,6 +7,7 @@ using System.Web.Http;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
 using Logger.BusinessLogic;
+using PACT.BusinessLogic;
 
 namespace MAP_REST.Controllers
 {
@@ -17,11 +18,16 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage Reports([FromBody] dynamic postObject)
         {
             var result = new Object();
-            var db = new ReportDataContext();
-            var sessionID = Log.GenerateServerSessionID();
 
             if (postObject != null)
             {
+
+                var db = new ReportDataContext();
+                var sessionID = Log.GenerateServerSessionID();
+
+                var userData = new PACT.BusinessLogic.User();
+                var user = userData.getUserData();
+
                 switch ((string)postObject.post.type)
                 {
                     case "get":                        
@@ -41,7 +47,7 @@ namespace MAP_REST.Controllers
                         break;
 
                     case "create":
-                        db.createReport((string)postObject.post.entityCode, (string)postObject.post.report.GUID, (string)postObject.post.report.user, (string)postObject.post.report.name, (string)postObject.post.report.type, (string)postObject.post.report.json, (string)postObject.post.report.category, (string)postObject.post.report.position);
+                        db.createReport((string)postObject.post.entityCode, (string)postObject.post.report.GUID, user.akoUserID, (string)postObject.post.report.name, (string)postObject.post.report.type, (string)postObject.post.report.json, (string)postObject.post.report.category, (string)postObject.post.report.position);
                         result = "created";
 
                         Log.ServerLog(sessionID, "report:create", (string)postObject.post.report.json, postObject);
@@ -49,7 +55,7 @@ namespace MAP_REST.Controllers
                         break;
 
                     case "update":
-                        db.updateReport((string)postObject.post.report.GUID, (string)postObject.post.report.user, (string)postObject.post.report.name, (string)postObject.post.report.type, (string)postObject.post.report.json, (string)postObject.post.report.category, (string)postObject.post.report.position);
+                        db.updateReport((string)postObject.post.report.GUID, user.akoUserID, (string)postObject.post.report.name, (string)postObject.post.report.type, (string)postObject.post.report.json, (string)postObject.post.report.category, (string)postObject.post.report.position);
                         result = "updated";
 
                         Log.ServerLog(sessionID, "report:update", (string)postObject.post.report.json, postObject);

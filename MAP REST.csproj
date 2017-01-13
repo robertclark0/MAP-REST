@@ -151,6 +151,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Canvas.Controller.cs" />
     <Compile Include="Controllers\Schema.Controller.cs" />
+    <Compile Include="DataAccess\Canvas.DataContext.cs" />
     <Compile Include="DataAccess\Download.DataContext.cs" />
     <Compile Include="DataAccess\Query.DataContext.cs" />
     <Compile Include="DataAccess\Report.DataContext.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Canvas.Model.cs" />
     <Compile Include="Models\Connection.Model.cs" />
     <Compile Include="Models\Product.Model.cs" />
     <Compile Include="Models\DownloadStatus.Model.cs" />
