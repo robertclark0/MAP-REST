@@ -13,6 +13,7 @@ namespace MAP_REST.QueryBuilder
         {
             bool aggregateFlag = queryObject.aggregation.enabled;
             bool paginationFlag = queryObject.pagination.enabled;
+            //bool calculationFlag = queryObject.calculation.enabled;
 
             QueryComponents components = BuildQueryComponents(queryObject);
 
@@ -26,6 +27,14 @@ namespace MAP_REST.QueryBuilder
                     , components.filters
                     , components.ordering);
             }
+            //else if (calculationFlag && paginationFlag)
+            //{
+            //    query = String.Format(SQLTemplate.PaginatedCalculation);
+            //}
+            //else if (calculationFlag)
+            //{
+            //    query = String.Format(SQLTemplate.PaginatedCalculation);
+            //}
             else if (aggregateFlag && paginationFlag)
             {
                 query = String.Format(SQLTemplate.PaginatedGrouping
@@ -125,27 +134,41 @@ namespace MAP_REST.QueryBuilder
             var operators = new List<string>();
             foreach (dynamic operation in operations)
             {
+                string columnName;
+                string dataType;
+
+                if (operation["dataValue"] != null)
+                {
+                    columnName = operation.dataValue.COLUMN_NAME;
+                    dataType = operation.dataValue.DATA_TYPE;
+                }
+                else
+                {
+                    columnName = operationObject.dataValue.COLUMN_NAME;
+                    dataType = operationObject.dataValue.DATA_TYPE;
+                }
+
                 if (operation.selectedValues.Count > 0)
                 {
                     switch ((string)operation.operation)
                     {
                         case "greater":
-                            operators.Add(String.Format("[{0}] > {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            operators.Add(String.Format("[{0}] > {1}", columnName, OperatorValueType(operation.selectedValues[0], dataType)));
                             break;
                         case "less":
-                            operators.Add(String.Format("[{0}] < {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            operators.Add(String.Format("[{0}] < {1}", columnName, OperatorValueType(operation.selectedValues[0], dataType)));
                             break;
                         case "greaterE":
-                            operators.Add(String.Format("[{0}] >= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            operators.Add(String.Format("[{0}] >= {1}", columnName, OperatorValueType(operation.selectedValues[0], dataType)));
                             break;
                         case "lessE":
-                            operators.Add(String.Format("[{0}] <= {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            operators.Add(String.Format("[{0}] <= {1}", columnName, OperatorValueType(operation.selectedValues[0], dataType)));
                             break;
                         case "equal":
-                            operators.Add(String.Format("[{0}] = {1}", operationObject.dataValue.COLUMN_NAME, OperatorValueType(operation.selectedValues[0], (string)operationObject.dataValue.DATA_TYPE)));
+                            operators.Add(String.Format("[{0}] = {1}", columnName, OperatorValueType(operation.selectedValues[0], dataType)));
                             break;
                         case "in":
-                            operators.Add(String.Format("[{0}] IN ({1})", operationObject.dataValue.COLUMN_NAME, OperatorValueJoin(operation.selectedValues, (string)operationObject.dataValue.DATA_TYPE)));
+                            operators.Add(String.Format("[{0}] IN ({1})", columnName, OperatorValueJoin(operation.selectedValues, dataType)));
                             break;
                     }
                 }
@@ -263,10 +286,10 @@ namespace MAP_REST.QueryBuilder
 
             if (orders.Count > 0)
             {
-                return "ORDER BY " + String.Join(", ", orders); ;
+                return String.Join(", ", orders);
             }
 
-            return String.Empty;
+            return String.Format("[{0}]", queryObject.selections[0].alias);
         }
 
         //DATA SOURCE
