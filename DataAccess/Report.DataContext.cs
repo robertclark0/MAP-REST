@@ -21,9 +21,9 @@ namespace MAP_REST.DataAccess
             return this.Database.SqlQuery<Models.ReportList>("UserCreated.usp_GetReportList @p0", EntityCode).ToList();
         }
 
-        public List<Models.Report> getReport(string GUID)
+        public Models.Report getReport(string GUID)
         {
-            return this.Database.SqlQuery<Models.Report>("UserCreated.usp_GetReport @p0", GUID).ToList();
+            return this.Database.SqlQuery<Models.Report>("UserCreated.usp_GetReport @p0", GUID).FirstOrDefault();
         }
 
         public void createReport(string EntityCode, string GUID, string User, string Report_Name, string Report_Type, string JSON, string Category, string Position)
