@@ -47,14 +47,16 @@ namespace MAP_REST.Controllers
 
                 ////get user restrictions
 
+                var dmisList = new List<DMIS>();
                 if (dataSource.Code == "CHUP")
                 {
-
+                    var userData = new PACT.BusinessLogic.User();
+                    dmisList = userData.getCHUPDMIS();
                 }
 
 
                 var builder = new QueryBuilder.Builder();
-                string queryString = builder.BuildQueryString(postObject.query);
+                string queryString = builder.BuildQueryString(postObject.query, false, dmisList);
                 
                 var queryDB = new QueryDataContext(connectionString);
                 var result = queryDB.QueryData(queryString);

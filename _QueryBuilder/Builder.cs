@@ -4,18 +4,19 @@ using System.Linq;
 using System.Web;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
+using PACT.Models;
 
 namespace MAP_REST.QueryBuilder
 {
     public class Builder
     {
-        public string BuildQueryString(dynamic queryObject, bool download = false)
+        public string BuildQueryString(dynamic queryObject, bool download = false, List<DMIS> dmisList = null)
         {
             bool aggregateFlag = queryObject.aggregation.enabled;
             bool paginationFlag = queryObject.pagination.enabled;
             //bool calculationFlag = queryObject.calculation.enabled;
 
-            QueryComponents components = BuildQueryComponents(queryObject);
+            QueryComponents components = BuildQueryComponents(queryObject, dmisList);
 
             string query = String.Empty;
             var SQLTemplate = new QueryBuilder.SQLTemplate();
@@ -79,12 +80,12 @@ namespace MAP_REST.QueryBuilder
         }
 
         //SELECTIONS
-        private QueryComponents BuildQueryComponents(dynamic queryObject)
+        private QueryComponents BuildQueryComponents(dynamic queryObject, List<DMIS> dmisList)
         {
             var components = new QueryComponents();
 
             components.selections = BuildSelections(queryObject);
-            components.filters = BuildFilters(queryObject);
+            components.filters = BuildFilters(queryObject, dmisList);
             components.grouping = BuildGrouping(queryObject);
             components.ordering = BuildOrder(queryObject);
             components.source = BuildDataSource(queryObject);
@@ -244,11 +245,25 @@ namespace MAP_REST.QueryBuilder
         }
 
         //FILTERS
-        private string BuildFilters(dynamic queryObject)
+        private string BuildFilters(dynamic queryObject, List<DMIS> dmisList)
         {
             var queryFilters = new List<string>();
 
             //USER LEVEL SECURITY, GET PACT RESTRICTIONS AND ADD THEM TO FILTERS.
+            if (dmisList.Count > 0)
+            {
+                var dmisStrings = new List<string>();
+
+                foreach (DMIS dmis in dmisList)
+                {
+                    dmisStrings.Add("'" + dmis.dmisID + "'");
+                }
+
+                string CHUPdmis = "dmisID in (" + String.Join(",", dmisStrings)  +")";
+
+                queryFilters.Add(CHUPdmis);
+            }
+            //
 
             foreach (dynamic filter in queryObject.filters)
             {

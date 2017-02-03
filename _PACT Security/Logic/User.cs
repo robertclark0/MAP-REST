@@ -75,5 +75,24 @@ namespace PACT.BusinessLogic
 
             return user;
         }
+
+
+        //This eventually need to change. PACT changes should allow better data restriction ability to conform to the feature profile
+        public List<DMIS> getCHUPDMIS()
+        {
+            var connection = Credentials.getConnectionString("PACT");
+            var db = new SecurityDataContext(connection.ConnectionString);
+
+            var AKOID = getAKOID();
+            var EDIPN = getEDIPN();
+            var dmisList = new List<DMIS>();
+
+            if (EDIPN != null)
+                dmisList = db.GetUserDmis(AKOID, "CHUP", EDIPN);
+            else
+                dmisList = db.GetUserDmis(AKOID, "CHUP");
+
+            return dmisList;
+        }
     }
 }

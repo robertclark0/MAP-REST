@@ -41,5 +41,15 @@ namespace PACT.DataAccess
             return this.Database.SqlQuery<Authorization>("usp_GetRolesUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
         }
 
+        //This eventually need to change. PACT changes should allow better data restriction ability to conform to the feature profile
+        public List<DMIS> GetUserDmis(string akoUserId, string productName)
+        {
+            return this.Database.SqlQuery<DMIS>("usp_GetDMISUserProduct @p0, @p1", akoUserId, productName).ToList();
+        }
+        public List<DMIS> GetUserDmis(string akoUserId, string productName, string ediPn)
+        {
+            return this.Database.SqlQuery<DMIS>("usp_GetDMISUserProduct @p0, @p1, @p2", akoUserId, productName, ediPn).ToList();
+        }
+
     }
 }

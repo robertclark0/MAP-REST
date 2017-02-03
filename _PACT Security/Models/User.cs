@@ -31,4 +31,9 @@ namespace PACT.Models
         public string roleName { get; set; }
     }
 
+    //This eventually need to change. PACT changes should allow better data restriction ability to conform to the feature profile
+    public class DMIS
+    {
+        public string dmisID { get; set; }
+    }
 }
