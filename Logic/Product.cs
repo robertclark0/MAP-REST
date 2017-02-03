@@ -33,5 +33,27 @@ namespace MAP_REST.BusinessLogic
 
             return products;
         }
+
+        public Models.Product getProduct(string productCode)
+        {
+            var db = new ProductDataContext();
+            var fp = new FeatureProfileDataContext();
+            var p = new Models.Product();
+            p.Code = productCode;
+            
+            p.Modules = db.getModules(p.Code);
+            p.DataSources = db.getDataSource(p.Code);
+            p.FeatureProfile = fp.getProfileDefinition(p.Code);
+
+            if (p.FeatureProfile != null)
+            {
+                p.FeatureProfile.ReportVisbilityRoles = fp.getReportVisibility(p.FeatureProfile.FeatureProfileID);
+                p.FeatureProfile.DataExportRoles = fp.getDataExport(p.FeatureProfile.FeatureProfileID);
+                p.FeatureProfile.AnalysisModuleRoles = fp.getAnalysisModule(p.FeatureProfile.FeatureProfileID);
+                p.FeatureProfile.SaveReportRoles = fp.getSaveReport(p.FeatureProfile.FeatureProfileID);
+            }
+
+            return p;
+        }
     }
 }

@@ -34,14 +34,28 @@ namespace MAP_REST.Controllers
             var featureProfileDB = new FeatureProfileDataContext();
             Models.FeatureProfile.Profile profile = featureProfileDB.getProfileDefinition(dataSource.Code);
 
-            var builder = new QueryBuilder.Builder();
-            string queryString = builder.BuildQueryString(postObject.query);
-
             var connection = new DataSourceConnection();
             string connectionString = connection.authorizedConnectionString(profile, dataSource);
 
             if (connectionString != null)
             {
+                ////Check if data restriction
+                //var productData = new BusinessLogic.Product();
+                //var product = productData.getProduct(dataSource.Code);
+
+                ////check if user applicable
+
+                ////get user restrictions
+
+                if (dataSource.Code == "CHUP")
+                {
+
+                }
+
+
+                var builder = new QueryBuilder.Builder();
+                string queryString = builder.BuildQueryString(postObject.query);
+                
                 var queryDB = new QueryDataContext(connectionString);
                 var result = queryDB.QueryData(queryString);
 
