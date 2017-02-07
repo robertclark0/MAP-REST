@@ -11,7 +11,7 @@ namespace MAP_REST.DataAccess
 {
     public class SchemaDataContext : DbContext
     {
-        public SchemaDataContext(string nameOrConnectionString)
+        public SchemaDataContext(string nameOrConnectionString = "name=MAP")
             : base(nameOrConnectionString)
         { }
 

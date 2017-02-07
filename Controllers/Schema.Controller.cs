@@ -7,6 +7,7 @@ using System.Web.Http;
 using MAP_REST.DataAccess;
 using MAP_REST.Models;
 using MAP_REST.BusinessLogic;
+using Logger;
 
 namespace MAP_REST.Controllers
 {
@@ -21,11 +22,11 @@ namespace MAP_REST.Controllers
             string column = postObject.post.columnName;
             string order = postObject.post.order;
 
-            var connection = Credentials.getConnectionString("MASTER");
-            var db = new SchemaDataContext(connection.ConnectionString);
+            var result = new Object();
+            var db = new SchemaDataContext();
 
             var source = db.getDataSource(alias);
-            var result = new Object();
+
 
             switch (type)
             {
@@ -39,7 +40,7 @@ namespace MAP_REST.Controllers
                     result = db.getColumnDistinct(source.Catalog, source.SourceName, column, order);
                     break;
             }
-            
+
             return Request.CreateResponse(HttpStatusCode.OK, new { result });
         }
 
