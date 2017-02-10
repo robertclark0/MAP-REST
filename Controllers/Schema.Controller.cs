@@ -18,9 +18,8 @@ namespace MAP_REST.Controllers
         public HttpResponseMessage tableSchema([FromBody] dynamic postObject)
         {
             string alias = postObject.post.alias;
-            string type = postObject.post.type;
-            string[] columns = postObject.post.columnName.ToObject<string[]>();
-            string order = postObject.post.order;
+            string type = postObject.post.type;           
+            
 
             var result = new Object();
             var distinct = new Object();
@@ -37,6 +36,9 @@ namespace MAP_REST.Controllers
                     break;
 
                 case "column":
+                    string[] columns = postObject.post.columnName.ToObject<string[]>();
+                    string order = postObject.post.order;
+
                     result = new List<object>();
                     result = db.getColumnDistinct(source.Catalog, source.SourceName, columns, order);
                     break;
