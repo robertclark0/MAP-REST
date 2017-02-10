@@ -19,10 +19,11 @@ namespace MAP_REST.Controllers
         {
             string alias = postObject.post.alias;
             string type = postObject.post.type;
-            string column = postObject.post.columnName;
+            string[] columns = postObject.post.columnName.ToObject<string[]>();
             string order = postObject.post.order;
 
             var result = new Object();
+            var distinct = new Object();
             var db = new SchemaDataContext();
 
             var source = db.getDataSource(alias);
@@ -37,7 +38,7 @@ namespace MAP_REST.Controllers
 
                 case "column":
                     result = new List<object>();
-                    result = db.getColumnDistinct(source.Catalog, source.SourceName, column, order);
+                    result = db.getColumnDistinct(source.Catalog, source.SourceName, columns, order);
                     break;
             }
 

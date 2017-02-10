@@ -32,7 +32,7 @@ namespace MAP_REST.DataAccess
             return this.Database.SqlQuery<Models.Schema>(String.Format(SQL, catalog, tableName)).ToList();
         }
 
-        public dynamic getColumnDistinct(string entityCode, string tableName, string columnName, string order = null)
+        public dynamic getColumnDistinct(string entityCode, string tableName, string[] columnNames, string order = null)
         {
             var items = new List<object>();
 
@@ -42,27 +42,37 @@ namespace MAP_REST.DataAccess
             switch (order)
             {
                 case "asc":
-                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 ASC", columnName, entityCode, tableName);
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 ASC", distinctColumns(columnNames), entityCode, tableName);
                     break;
 
                 case "desc":
-                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 DESC", columnName, entityCode, tableName);
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 DESC", distinctColumns(columnNames), entityCode, tableName);
                     break;
 
                 default:
-                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}]", columnName, entityCode, tableName);
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}]", distinctColumns(columnNames), entityCode, tableName);
                     break;
             }
 
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                items.Add(reader[0]);
-            }
+                var item = new List<Object>();             
 
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    item.Add(reader[i]);
+                }
+
+                items.Add(item);
+            }            
             return items;
         }
 
+        public string distinctColumns(string[] columnNames)
+        {
+            return String.Join("],[", columnNames);
+        }
 
     }
 }
