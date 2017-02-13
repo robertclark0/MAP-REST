@@ -42,11 +42,11 @@ namespace MAP_REST.DataAccess
             switch (order)
             {
                 case "asc":
-                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 ASC", distinctColumns(columnNames), entityCode, tableName);
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY {3}", distinctColumns(columnNames), entityCode, tableName, multiDistinctOrder(columnNames, "ASC"));
                     break;
 
                 case "desc":
-                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY 1 DESC", distinctColumns(columnNames), entityCode, tableName);
+                    cmd.CommandText = String.Format("SELECT DISTINCT [{0}] FROM [{1}].dbo.[{2}] ORDER BY {3}", distinctColumns(columnNames), entityCode, tableName, multiDistinctOrder(columnNames, "DESC"));
                     break;
 
                 default:
@@ -72,6 +72,15 @@ namespace MAP_REST.DataAccess
         public string distinctColumns(string[] columnNames)
         {
             return String.Join("],[", columnNames);
+        }
+
+        public string multiDistinctOrder(string[] columnNames, string direction)
+        {
+            for (int i = 0; i < columnNames.Length; i++)
+            {
+                columnNames[i] = String.Format("[{0}] {1}", columnNames[i], direction);
+            }
+            return String.Join(",", columnNames);
         }
 
     }
